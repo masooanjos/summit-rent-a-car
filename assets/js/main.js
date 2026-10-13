@@ -221,7 +221,6 @@
   }
 
   var EBOOK_LEADS_KEY = "summit_ebook_leads";
-  var EBOOK_MAIL_ENDPOINT = "https://formsubmit.co/ajax/masooanjos@gmail.com";
 
   var ebooks = [
     { key: "primeira-viagem", tPt: "Guia da primeira viagem a Orlando", tEn: "First trip to Orlando guide", dPt: "O passo a passo para planejar a viagem em família, do embarque à volta para casa.", dEn: "A step-by-step guide to planning your family trip, from departure to the way home." },
@@ -263,33 +262,6 @@
       localStorage.setItem(EBOOK_LEADS_KEY, JSON.stringify(list));
       return true;
     } catch (e) { return false; }
-  }
-
-  function sendEbookMail(lead) {
-    var en = lead.idioma === "en";
-    var body = {
-      _subject: en ? "Your Summit Rent a Car ebooks" : "Seus ebooks da Summit Rent a Car",
-      _template: "box",
-      _captcha: "false",
-      _cc: lead.email
-    };
-    body[en ? "Message" : "Mensagem"] = en
-      ? "Hi, " + lead.nome + "! Here are the ebooks you asked for. Just open the links below to download them."
-      : "Olá, " + lead.nome + "! Aqui estão os ebooks que você pediu. É só abrir os links abaixo para baixar.";
-    ebooks.forEach(function (b) {
-      if (lead.ebooks.indexOf(b.key) < 0) return;
-      body[en ? b.tEn : b.tPt] = new URL("assets/ebooks/" + b.key + ".pdf", document.baseURI).href;
-    });
-    body[en ? "Name" : "Nome"] = lead.nome;
-    body["E-mail"] = lead.email;
-    body[en ? "Phone" : "Telefone"] = lead.telefone;
-    return fetch(EBOOK_MAIL_ENDPOINT, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", Accept: "application/json" },
-      body: JSON.stringify(body)
-    }).then(function (r) { return r.json(); }).then(function (j) {
-      if (String(j.success) !== "true") throw new Error(j.message || "send failed");
-    });
   }
 
   function trackEbookLead(keys) {
@@ -343,7 +315,9 @@
       btn.disabled = true;
       btn.textContent = tr("ebm_sending");
       sendErr.hidden = true;
-      sendEbookMail(lead).then(function () {
+      var chosen = ebooks.filter(function (b) { return keys.indexOf(b.key) >= 0; }).map(function (b) { return { key: b.key, title: pick(b, "t") }; });
+      var sending = window.SummitEbookMail ? window.SummitEbookMail.send(lead, chosen) : Promise.resolve();
+      sending.then(function () {
         saveEbookLead(lead);
         trackEbookLead(keys);
         ebookForm.reset();
