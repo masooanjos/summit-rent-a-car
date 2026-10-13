@@ -185,9 +185,86 @@
     });
   }
 
+  var extras = [
+    { key: "cadeirinha", nPt: "Cadeirinha infantil", nEn: "Child car seat", dPt: "Segurança e conforto para os pequenos durante todos os passeios.", dEn: "Safety and comfort for the little ones on every outing.", price: "",
+      p: '<path d="M8 3h8a2 2 0 012 2v8H6V5a2 2 0 012-2z"/><path d="M4 13h16v3a2 2 0 01-2 2H6a2 2 0 01-2-2z"/><path d="M8 18v3M16 18v3"/>' },
+    { key: "condutor", nPt: "Condutor adicional", nEn: "Additional driver", dPt: "Divida a direção com quem viaja com você, com tudo regularizado.", dEn: "Share the driving with your travel companion, all properly covered.", price: "",
+      p: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0113 0"/><path d="M18 8v6M15 11h6"/>' },
+    { key: "gps", nPt: "GPS", nEn: "GPS", dPt: "Chegue aos parques, outlets e restaurantes sem depender do celular.", dEn: "Get to the parks, outlets and restaurants without relying on your phone.", price: "",
+      p: '<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/>' },
+    { key: "wifi", nPt: "Wi-Fi móvel", nEn: "Mobile Wi-Fi", dPt: "Internet para toda a família, no carro e nos passeios.", dEn: "Internet for the whole family, in the car and on the go.", price: "",
+      p: '<path d="M2 9a15 15 0 0120 0M5.5 12.5a10 10 0 0113 0M9 16a5 5 0 016 0"/><circle cx="12" cy="19.5" r="1"/>' }
+  ];
+
+  function waExtraMessage(name) {
+    var txt = lang() === "en"
+      ? "Hi! I'd like to add the extra *" + name + "* to my rental in Orlando. Could you send me prices and availability?"
+      : "Olá! Quero incluir o adicional *" + name + "* na minha locação em Orlando. Pode me passar valores e disponibilidade?";
+    return WHATSAPP_LINK + "?text=" + encodeURIComponent(txt);
+  }
+
+  var extrasEl = document.getElementById("extras");
+  function renderExtras() {
+    if (!extrasEl) return;
+    extrasEl.innerHTML = "";
+    extras.forEach(function (x) {
+      var name = pick(x, "n");
+      var div = document.createElement("article");
+      div.className = "extra reveal in";
+      div.innerHTML =
+        '<div class="feat__ico">' + ico(x.p) + "</div>" +
+        "<h3>" + name + "</h3><p>" + pick(x, "d") + "</p>" +
+        '<div class="extra__price">' + (x.price || tr("add_price")) + "</div>" +
+        '<a class="btn btn--primary btn--block" target="_blank" rel="noopener" data-cta="extra-' + x.key + '" href="' + waExtraMessage(name) + '">' + tr("add_btn") + "</a>";
+      extrasEl.appendChild(div);
+    });
+  }
+
+  var ebooks = [
+    { key: "primeira-viagem", tPt: "Guia da primeira viagem a Orlando", tEn: "First trip to Orlando guide", dPt: "O passo a passo para planejar a viagem em família, do embarque à volta para casa.", dEn: "A step-by-step guide to planning your family trip, from departure to the way home.", cover: "", file: "" },
+    { key: "dirigindo-na-florida", tPt: "Dirigindo na Flórida", tEn: "Driving in Florida", dPt: "Pedágios, regras de trânsito, estacionamento nos parques e dicas para dirigir tranquilo.", dEn: "Tolls, traffic rules, parking at the parks and tips for a stress-free drive.", cover: "", file: "" },
+    { key: "roteiro-de-compras", tPt: "Roteiro de compras em Orlando", tEn: "Orlando shopping guide", dPt: "Outlets, lojas e os melhores horários para aproveitar sem perder tempo.", dEn: "Outlets, stores and the best times to shop without wasting time.", cover: "", file: "" }
+  ];
+
+  function waEbookMessage(title) {
+    var txt = lang() === "en"
+      ? "Hi! I'd like to receive the ebook *" + title + "*."
+      : "Olá! Quero receber o ebook *" + title + "*.";
+    return WHATSAPP_LINK + "?text=" + encodeURIComponent(txt);
+  }
+
+  var ebooksEl = document.getElementById("ebooksGrid");
+  function renderEbooks() {
+    if (!ebooksEl) return;
+    ebooksEl.innerHTML = "";
+    ebooks.forEach(function (b) {
+      var title = pick(b, "t");
+      var cover = b.cover
+        ? '<img src="' + b.cover + '" alt="' + title + '" width="600" height="800" loading="lazy" decoding="async">'
+        : '<span class="ebook__brand">Summit</span><span class="ebook__title">' + title + "</span>";
+      var action = b.file
+        ? '<a class="btn btn--primary btn--block" download data-ebook="' + b.key + '" href="' + b.file + '">' + tr("eb_btn_dl") + "</a>"
+        : '<a class="btn btn--primary btn--block" target="_blank" rel="noopener" data-ebook="' + b.key + '" data-cta="ebook-' + b.key + '" href="' + waEbookMessage(title) + '">' + tr("eb_btn_wa") + "</a>";
+      var art = document.createElement("article");
+      art.className = "ebook reveal in";
+      art.innerHTML =
+        '<div class="ebook__cover"><span class="ebook__tag">' + tr("eb_tag") + "</span>" + cover + "</div>" +
+        '<div class="ebook__body"><h3>' + title + "</h3><p>" + pick(b, "d") + "</p>" + action + "</div>";
+      ebooksEl.appendChild(art);
+    });
+  }
+
+  function trackDownload(key) {
+    if (window.dataLayer) window.dataLayer.push({ event: "ebook_download", ebook: key });
+    if (window.gtag) window.gtag("event", "file_download", { file_name: key, content_type: "ebook" });
+    if (window.fbq) window.fbq("trackCustom", "EbookDownload", { content_name: key });
+  }
+
   renderFleet();
+  renderExtras();
   renderFeats();
-  if (window.I18N) window.I18N.onChange(function () { renderFleet(); renderFeats(); });
+  renderEbooks();
+  if (window.I18N) window.I18N.onChange(function () { renderFleet(); renderExtras(); renderFeats(); renderEbooks(); });
 
   var toggle = document.getElementById("navToggle");
   var nav = document.getElementById("nav");
@@ -245,6 +322,8 @@
     if (el && el.tagName === "A" && el.getAttribute("data-cta") !== "lead-submit") {
       trackLead(el.getAttribute("data-cta"));
     }
+    var eb = e.target.closest ? e.target.closest("[data-ebook]") : null;
+    if (eb) trackDownload(eb.getAttribute("data-ebook"));
   });
 
   var yearEl = document.getElementById("year");
@@ -264,5 +343,161 @@
     }, 50);
   } else {
     document.querySelectorAll(".reveal").forEach(function (el) { el.classList.add("in"); });
+  }
+
+  var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  var moments = document.getElementById("moments");
+  var track = moments ? moments.querySelector(".moments__track") : null;
+  if (track && !reduceMotion) {
+    Array.prototype.slice.call(track.children).forEach(function (img) {
+      var clone = img.cloneNode(true);
+      clone.alt = "";
+      clone.setAttribute("aria-hidden", "true");
+      track.appendChild(clone);
+    });
+    moments.classList.add("is-loop");
+  }
+
+  function initSky(host) {
+    var canvas = document.createElement("canvas");
+    var ctx = canvas.getContext ? canvas.getContext("2d") : null;
+    if (!ctx) return;
+    canvas.className = "sky";
+    canvas.setAttribute("aria-hidden", "true");
+    host.insertBefore(canvas, host.firstChild);
+
+    var shooting = host.getAttribute("data-sky") === "shooting" && !reduceMotion;
+    var fireworks = host.getAttribute("data-sky") === "fireworks" && !reduceMotion;
+    var w = 0, h = 0, stars = [], shot = null, nextShot = 0, visible = false, raf = 0;
+    var sparks = [], nextBurst = 0, burstColors = ["255,215,94", "255,143,196", "255,255,255", "190,160,255"];
+
+    function resize() {
+      var dpr = Math.min(window.devicePixelRatio || 1, 2);
+      var nw = host.clientWidth, nh = host.clientHeight;
+      if (nw === w && nh === h) return;
+      w = nw; h = nh;
+      canvas.width = Math.round(w * dpr);
+      canvas.height = Math.round(h * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      var n = Math.min(170, Math.round((w * h) / 8500));
+      stars = [];
+      for (var i = 0; i < n; i++) {
+        stars.push({ x: Math.random() * w, y: Math.random() * h, r: Math.random() * 1.3 + 0.3, p: Math.random() * 6.28, s: Math.random() * 1.3 + 0.4, gold: Math.random() < 0.35 });
+      }
+      if (!visible || reduceMotion) draw(0);
+    }
+
+    function draw(t) {
+      ctx.clearRect(0, 0, w, h);
+      for (var i = 0; i < stars.length; i++) {
+        var st = stars[i];
+        var a = reduceMotion ? 0.7 : 0.25 + 0.75 * Math.abs(Math.sin((t / 1000) * st.s + st.p));
+        ctx.globalAlpha = a;
+        ctx.fillStyle = ctx.strokeStyle = st.gold ? "#ffe08a" : "#ffffff";
+        ctx.beginPath();
+        ctx.arc(st.x, st.y, st.r, 0, 6.28);
+        ctx.fill();
+        if (st.r > 1.25) {
+          var l = st.r * 3.4 * a;
+          ctx.lineWidth = 0.7;
+          ctx.beginPath();
+          ctx.moveTo(st.x - l, st.y); ctx.lineTo(st.x + l, st.y);
+          ctx.moveTo(st.x, st.y - l); ctx.lineTo(st.x, st.y + l);
+          ctx.stroke();
+        }
+      }
+      if (shooting) {
+        if (!shot && t > nextShot) {
+          shot = { x: Math.random() * w * 0.7, y: Math.random() * h * 0.35, life: 0 };
+        }
+        if (shot) {
+          shot.x += 9; shot.y += 3.6; shot.life++;
+          var fade = Math.max(0, 1 - shot.life / 55);
+          var g = ctx.createLinearGradient(shot.x, shot.y, shot.x - 110, shot.y - 44);
+          g.addColorStop(0, "rgba(255,240,190," + fade + ")");
+          g.addColorStop(1, "rgba(255,240,190,0)");
+          ctx.globalAlpha = 1;
+          ctx.strokeStyle = g;
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(shot.x, shot.y); ctx.lineTo(shot.x - 110, shot.y - 44);
+          ctx.stroke();
+          if (shot.life > 55) { shot = null; nextShot = t + 4500 + Math.random() * 6000; }
+        }
+      }
+      if (fireworks) {
+        if (t > nextBurst) {
+          var bx = w * (0.12 + Math.random() * 0.76), by = h * (0.12 + Math.random() * 0.4);
+          var color = burstColors[Math.floor(Math.random() * burstColors.length)];
+          for (var k = 0; k < 28; k++) {
+            var ang = (k / 28) * 6.28, sp = 1.4 + Math.random() * 1.6;
+            sparks.push({ x: bx, y: by, vx: Math.cos(ang) * sp, vy: Math.sin(ang) * sp, life: 0, c: color });
+          }
+          nextBurst = t + 1700 + Math.random() * 2200;
+        }
+        for (var s = sparks.length - 1; s >= 0; s--) {
+          var pt = sparks[s];
+          pt.x += pt.vx; pt.y += pt.vy; pt.vy += 0.025; pt.vx *= 0.985; pt.vy *= 0.985; pt.life++;
+          if (pt.life > 70) { sparks.splice(s, 1); continue; }
+          ctx.globalAlpha = 1;
+          ctx.fillStyle = "rgba(" + pt.c + "," + (1 - pt.life / 70) + ")";
+          ctx.beginPath();
+          ctx.arc(pt.x, pt.y, 1.6, 0, 6.28);
+          ctx.fill();
+        }
+      }
+      ctx.globalAlpha = 1;
+    }
+
+    function loop(t) {
+      draw(t);
+      raf = visible ? window.requestAnimationFrame(loop) : 0;
+    }
+
+    resize();
+    if ("ResizeObserver" in window) new ResizeObserver(resize).observe(host);
+    else window.addEventListener("resize", resize);
+
+    if (reduceMotion || !("IntersectionObserver" in window)) return;
+    new IntersectionObserver(function (entries) {
+      visible = entries[0].isIntersecting;
+      if (visible && !raf) raf = window.requestAnimationFrame(loop);
+    }).observe(host);
+  }
+
+  if (window.requestAnimationFrame) {
+    document.querySelectorAll("[data-sky]").forEach(initSky);
+  }
+
+  if (!reduceMotion) {
+    var dustCount = 0, lastHover = 0, lastScroll = 0;
+    var dust = function (x, y) {
+      if (dustCount > 24) return;
+      dustCount++;
+      var s = document.createElement("span");
+      s.className = "dust";
+      s.setAttribute("aria-hidden", "true");
+      s.textContent = "✦";
+      s.style.left = x + "px";
+      s.style.top = y + "px";
+      s.style.fontSize = (8 + Math.random() * 10) + "px";
+      s.style.setProperty("--dx", (Math.random() * 44 - 22) + "px");
+      document.body.appendChild(s);
+      setTimeout(function () { s.remove(); dustCount--; }, 900);
+    };
+    document.addEventListener("mousemove", function (e) {
+      var now = Date.now();
+      if (now - lastHover < 70 || !e.target.closest || !e.target.closest(".btn")) return;
+      lastHover = now;
+      dust(e.clientX, e.clientY);
+    });
+    window.addEventListener("scroll", function () {
+      var now = Date.now();
+      if (now - lastScroll < 160) return;
+      lastScroll = now;
+      var side = Math.random() < 0.5 ? 0.02 + Math.random() * 0.05 : 0.93 + Math.random() * 0.05;
+      dust(window.innerWidth * side, window.innerHeight * (0.15 + Math.random() * 0.7));
+    }, { passive: true });
   }
 })();
