@@ -160,18 +160,41 @@ p{margin:0 0 1em}
 .extra p{color:var(--cinza);font-size:.95rem;margin:0 0 14px}
 .extra__price{margin-top:auto;font-family:var(--font-display);font-weight:800;font-size:1.35rem;color:var(--azul);margin-bottom:14px}
 .ebooks{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
-.ebook{background:var(--branco);border:1px solid var(--linha);border-radius:var(--radius);overflow:hidden;display:flex;flex-direction:column;box-shadow:var(--sombra);transition:transform .2s ease,box-shadow .2s ease}
+.ebook{background:var(--branco);border:1px solid var(--linha);border-radius:var(--radius);padding:26px 22px 22px;display:flex;flex-direction:column;gap:10px;box-shadow:var(--sombra);transition:transform .2s ease,box-shadow .2s ease}
 .ebook:hover{transform:translateY(-6px);box-shadow:var(--brilho),var(--sombra-lg)}
-.ebook__cover{position:relative;aspect-ratio:4/3;display:flex;flex-direction:column;justify-content:flex-end;gap:8px;padding:22px;color:#fff;background:radial-gradient(circle at 78% 22%,rgba(255,224,138,.55) 0,transparent 3px),radial-gradient(circle at 30% 34%,rgba(255,255,255,.7) 0,transparent 2px),radial-gradient(circle at 62% 58%,rgba(255,255,255,.5) 0,transparent 2px),radial-gradient(circle at 14% 70%,rgba(255,224,138,.6) 0,transparent 2px),radial-gradient(circle at 88% 76%,rgba(255,143,196,.35),transparent 45%),var(--grad-noite);overflow:hidden}
-.ebook__cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.ebook__tag{position:absolute;z-index:1;top:14px;left:14px;background:var(--grad-ouro);color:#2a1d00;font-size:.72rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:6px 12px;border-radius:999px}
-.ebook__tag::before{content:"✦ "}
-.ebook__brand{font-size:.72rem;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:var(--ouro-claro)}
-.ebook__title{font-family:var(--font-display);font-weight:700;font-size:1.5rem;line-height:1.15;text-shadow:0 2px 14px rgba(11,10,46,.6)}
-.ebook__body{padding:22px;display:flex;flex-direction:column;gap:10px;flex:1}
-.ebook__body h3{margin:0;color:var(--azul-900)}
-.ebook__body p{color:var(--cinza);font-size:.95rem;margin:0 0 6px}
-.ebook__body .btn{margin-top:auto}
+.ebook__cover{position:relative;aspect-ratio:3/4;width:100%;max-width:170px;margin:0 auto 12px;display:flex;flex-direction:column;justify-content:flex-end;gap:8px;padding:18px 16px 20px 24px;color:#fff;border-radius:5px 14px 14px 5px;background:linear-gradient(90deg,rgba(0,0,0,.35) 0,rgba(255,255,255,.14) 10px,transparent 17px),radial-gradient(circle at 78% 18%,rgba(255,224,138,.8) 0,transparent 3px),radial-gradient(circle at 34% 30%,rgba(255,255,255,.75) 0,transparent 2px),radial-gradient(circle at 62% 46%,rgba(255,255,255,.55) 0,transparent 2px),radial-gradient(circle at 90% 80%,rgba(255,143,196,.38),transparent 46%),var(--grad-noite);box-shadow:var(--sombra-lg),0 0 0 1px rgba(255,224,138,.35);transform:rotate(-2.5deg)}
+.ebook:nth-child(even) .ebook__cover{transform:rotate(2deg)}
+.ebook__cover--2{filter:hue-rotate(-38deg)}
+.ebook__cover--3{filter:hue-rotate(48deg)}
+.ebook__cover--4{filter:hue-rotate(-75deg)}
+.ebook__cover--5{filter:hue-rotate(95deg)}
+.ebook__brand{font-size:.6rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--ouro-claro)}
+.ebook__title{font-family:var(--font-display);font-weight:700;font-size:1.15rem;line-height:1.12}
+.ebook__star{position:absolute;right:14px;top:12px;font-size:1.4rem;line-height:1;color:var(--laranja);text-shadow:0 0 14px rgba(255,179,0,.8)}
+.ebook h3{font-family:var(--font-display);font-weight:700;font-size:1.3rem;color:var(--azul-900);margin:0}
+.ebook p{color:var(--cinza);font-size:.95rem;margin:0 0 8px}
+.ebook .btn{margin-top:auto}
+.ebook-picks{border:0;padding:0;margin:0 0 16px;min-width:0}
+.ebook-picks legend{padding:0;font-size:.82rem;font-weight:600;margin-bottom:6px}
+.ebook-picks>div{display:grid;gap:8px;padding:12px 14px;background:var(--fundo-alt);border-radius:var(--radius-sm)}
+.ebook-picks label{display:flex;gap:10px;align-items:center;font-size:.9rem;font-weight:600;cursor:pointer}
+.ebook-picks input{width:18px;height:18px;flex:0 0 auto;accent-color:var(--violeta)}
+.ebook-picks__err{color:#c0262d;font-size:.82rem;font-weight:600;margin:8px 0 0}
+.ebook-picks__err[hidden]{display:none}
+#ebookSendErr{margin:0 0 12px}
+.btn:disabled{opacity:.65;cursor:wait}
+.modal{border:0;padding:0;width:calc(100% - 32px);max-width:460px;max-height:calc(100% - 32px);overflow:auto;border-radius:var(--radius);background:var(--branco);color:var(--tinta);box-shadow:var(--sombra-lg),0 0 0 1px rgba(255,224,138,.55)}
+.modal::backdrop{background:rgba(11,10,46,.66);backdrop-filter:blur(3px)}
+.modal__box{position:relative;padding:30px 26px 26px}
+.modal__box::before{content:"";position:absolute;left:22px;right:22px;top:0;height:4px;border-radius:0 0 6px 6px;background:linear-gradient(90deg,var(--laranja),var(--rosa),var(--violeta))}
+.modal__box h3{font-family:var(--font-display);font-weight:700;font-size:1.45rem;color:var(--azul-900);margin-bottom:.2em;padding-right:1.6em}
+.modal__close{position:absolute;right:14px;top:14px;width:36px;height:36px;border:0;border-radius:50%;background:var(--fundo-alt);color:var(--azul-900);font-size:1.5rem;line-height:1;cursor:pointer}
+.modal__close:hover{background:var(--linha)}
+.modal__ok{text-align:center;padding:14px 0 4px}
+.modal__ok[hidden],#ebookForm[hidden]{display:none}
+.modal__ok h3{padding:0}
+.modal__ok p{color:var(--cinza);margin-bottom:22px}
+.modal__ok-star{display:block;font-size:2.6rem;line-height:1;color:var(--laranja);text-shadow:0 0 18px rgba(255,179,0,.7);margin-bottom:10px}
 .fleet__note{text-align:center;color:var(--cinza);font-size:.9rem;margin-top:26px}
 .about{display:grid;grid-template-columns:1fr 1fr;gap:clamp(32px,5vw,64px);align-items:center}
 .about__media{position:relative;width:100%;max-width:500px;margin:0 auto 16px;padding:0 18px}
@@ -310,8 +333,11 @@ p{margin:0 0 1em}
   .nav .btn--wa{display:inline-flex;margin-top:10px}
   .nav-toggle{display:block}
   .header__cta{display:none}
-  .feats,.fleet,.reviews,.steps,.extras,.ebooks{grid-template-columns:1fr}
+  .feats,.fleet,.reviews,.steps,.extras{grid-template-columns:1fr}
   .field-row{grid-template-columns:1fr}
+  .ebooks{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:14px;margin:0 -18px;padding:6px 18px 18px;scrollbar-width:none}
+  .ebooks::-webkit-scrollbar{display:none}
+  .ebook{flex:0 0 78%;scroll-snap-align:center}
   .exp__media::after{right:6px}
   .moments__track img{margin-right:14px;border-width:5px}
   .wa-float .wa-float__txt{display:none}

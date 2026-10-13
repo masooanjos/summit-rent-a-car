@@ -220,44 +220,142 @@
     });
   }
 
+  var EBOOK_LEADS_KEY = "summit_ebook_leads";
+  var EBOOK_MAIL_ENDPOINT = "https://formsubmit.co/ajax/masooanjos@gmail.com";
+
   var ebooks = [
-    { key: "primeira-viagem", tPt: "Guia da primeira viagem a Orlando", tEn: "First trip to Orlando guide", dPt: "O passo a passo para planejar a viagem em família, do embarque à volta para casa.", dEn: "A step-by-step guide to planning your family trip, from departure to the way home.", cover: "", file: "" },
-    { key: "dirigindo-na-florida", tPt: "Dirigindo na Flórida", tEn: "Driving in Florida", dPt: "Pedágios, regras de trânsito, estacionamento nos parques e dicas para dirigir tranquilo.", dEn: "Tolls, traffic rules, parking at the parks and tips for a stress-free drive.", cover: "", file: "" },
-    { key: "roteiro-de-compras", tPt: "Roteiro de compras em Orlando", tEn: "Orlando shopping guide", dPt: "Outlets, lojas e os melhores horários para aproveitar sem perder tempo.", dEn: "Outlets, stores and the best times to shop without wasting time.", cover: "", file: "" }
+    { key: "primeira-viagem", tPt: "Guia da primeira viagem a Orlando", tEn: "First trip to Orlando guide", dPt: "O passo a passo para planejar a viagem em família, do embarque à volta para casa.", dEn: "A step-by-step guide to planning your family trip, from departure to the way home." },
+    { key: "dirigindo-na-florida", tPt: "Dirigindo na Flórida", tEn: "Driving in Florida", dPt: "Pedágios, regras de trânsito e estacionamento para dirigir tranquilo.", dEn: "Tolls, traffic rules and parking for a stress-free drive." },
+    { key: "roteiro-de-compras", tPt: "Roteiro de compras em Orlando", tEn: "Orlando shopping guide", dPt: "Outlets, lojas e os melhores horários para aproveitar sem perder tempo.", dEn: "Outlets, stores and the best times to shop without wasting time." },
+    { key: "parques-com-criancas", tPt: "Parques com crianças", tEn: "Theme parks with kids", dPt: "Como organizar os dias de parque com os pequenos, sem correria.", dEn: "How to plan park days with the little ones, without the rush." },
+    { key: "orlando-no-orcamento", tPt: "Orlando sem estourar o orçamento", tEn: "Orlando on a budget", dPt: "Onde economizar em hospedagem, alimentação e deslocamento.", dEn: "Where to save on lodging, food and getting around." }
   ];
 
-  function waEbookMessage(title) {
-    var txt = lang() === "en"
-      ? "Hi! I'd like to receive the ebook *" + title + "*."
-      : "Olá! Quero receber o ebook *" + title + "*.";
-    return WHATSAPP_LINK + "?text=" + encodeURIComponent(txt);
-  }
-
   var ebooksEl = document.getElementById("ebooksGrid");
+  var ebookPicks = document.getElementById("ebookPicks");
   function renderEbooks() {
     if (!ebooksEl) return;
     ebooksEl.innerHTML = "";
-    ebooks.forEach(function (b) {
+    ebooks.forEach(function (b, i) {
       var title = pick(b, "t");
-      var cover = b.cover
-        ? '<img src="' + b.cover + '" alt="' + title + '" width="600" height="800" loading="lazy" decoding="async">'
-        : '<span class="ebook__brand">Summit</span><span class="ebook__title">' + title + "</span>";
-      var action = b.file
-        ? '<a class="btn btn--primary btn--block" download data-ebook="' + b.key + '" href="' + b.file + '">' + tr("eb_btn_dl") + "</a>"
-        : '<a class="btn btn--primary btn--block" target="_blank" rel="noopener" data-ebook="' + b.key + '" data-cta="ebook-' + b.key + '" href="' + waEbookMessage(title) + '">' + tr("eb_btn_wa") + "</a>";
       var art = document.createElement("article");
       art.className = "ebook reveal in";
       art.innerHTML =
-        '<div class="ebook__cover"><span class="ebook__tag">' + tr("eb_tag") + "</span>" + cover + "</div>" +
-        '<div class="ebook__body"><h3>' + title + "</h3><p>" + pick(b, "d") + "</p>" + action + "</div>";
+        '<div class="ebook__cover ebook__cover--' + (i % 5 + 1) + '" aria-hidden="true"><span class="ebook__star">✦</span><span class="ebook__brand">Summit Rent a Car</span><span class="ebook__title">' + title + "</span></div>" +
+        "<h3>" + title + "</h3><p>" + pick(b, "d") + "</p>" +
+        '<button type="button" class="btn btn--primary btn--block" data-ebook-open="' + b.key + '">' + tr("eb_btn") + "</button>";
       ebooksEl.appendChild(art);
+    });
+    if (ebookPicks) {
+      var checked = {};
+      ebookPicks.querySelectorAll("input:checked").forEach(function (c) { checked[c.value] = true; });
+      ebookPicks.innerHTML = ebooks.map(function (b) {
+        return '<label><input type="checkbox" name="ebooks" value="' + b.key + '"' + (checked[b.key] ? " checked" : "") + "> " + pick(b, "t") + "</label>";
+      }).join("");
+    }
+  }
+
+  function saveEbookLead(lead) {
+    try {
+      var list = JSON.parse(localStorage.getItem(EBOOK_LEADS_KEY) || "[]");
+      if (!Array.isArray(list)) list = [];
+      list.push(lead);
+      localStorage.setItem(EBOOK_LEADS_KEY, JSON.stringify(list));
+      return true;
+    } catch (e) { return false; }
+  }
+
+  function sendEbookMail(lead) {
+    var en = lead.idioma === "en";
+    var body = {
+      _subject: en ? "Your Summit Rent a Car ebooks" : "Seus ebooks da Summit Rent a Car",
+      _template: "box",
+      _captcha: "false",
+      _cc: lead.email
+    };
+    body[en ? "Message" : "Mensagem"] = en
+      ? "Hi, " + lead.nome + "! Here are the ebooks you asked for. Just open the links below to download them."
+      : "Olá, " + lead.nome + "! Aqui estão os ebooks que você pediu. É só abrir os links abaixo para baixar.";
+    ebooks.forEach(function (b) {
+      if (lead.ebooks.indexOf(b.key) < 0) return;
+      body[en ? b.tEn : b.tPt] = new URL("assets/ebooks/" + b.key + ".pdf", document.baseURI).href;
+    });
+    body[en ? "Name" : "Nome"] = lead.nome;
+    body["E-mail"] = lead.email;
+    body[en ? "Phone" : "Telefone"] = lead.telefone;
+    return fetch(EBOOK_MAIL_ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Accept: "application/json" },
+      body: JSON.stringify(body)
+    }).then(function (r) { return r.json(); }).then(function (j) {
+      if (String(j.success) !== "true") throw new Error(j.message || "send failed");
     });
   }
 
-  function trackDownload(key) {
-    if (window.dataLayer) window.dataLayer.push({ event: "ebook_download", ebook: key });
-    if (window.gtag) window.gtag("event", "file_download", { file_name: key, content_type: "ebook" });
-    if (window.fbq) window.fbq("trackCustom", "EbookDownload", { content_name: key });
+  function trackEbookLead(keys) {
+    var label = keys.join(",");
+    if (window.dataLayer) window.dataLayer.push({ event: "ebook_lead", ebooks: label });
+    if (window.gtag) window.gtag("event", "generate_lead", { method: "ebook", ebooks: label });
+    if (window.fbq) window.fbq("track", "Lead", { content_name: "ebook-" + label });
+  }
+
+  var ebookModal = document.getElementById("ebookModal");
+  var ebookForm = document.getElementById("ebookForm");
+  var ebookOk = document.getElementById("ebookOk");
+  var ebookPicksErr = document.getElementById("ebookPicksErr");
+  if (ebookModal && ebookForm && ebookOk && ebookPicks) {
+    var closeEbook = function () {
+      if (ebookModal.close) ebookModal.close(); else ebookModal.removeAttribute("open");
+    };
+    document.addEventListener("click", function (e) {
+      var opener = e.target.closest ? e.target.closest("[data-ebook-open]") : null;
+      if (!opener) return;
+      var key = opener.getAttribute("data-ebook-open");
+      ebookPicks.querySelectorAll("input").forEach(function (c) { c.checked = c.value === key; });
+      ebookPicksErr.hidden = true;
+      document.getElementById("ebookSendErr").hidden = true;
+      ebookForm.hidden = false;
+      ebookOk.hidden = true;
+      if (ebookModal.showModal) ebookModal.showModal(); else ebookModal.setAttribute("open", "");
+      document.getElementById("e-nome").focus();
+    });
+    ebookPicks.addEventListener("change", function () { ebookPicksErr.hidden = true; });
+    document.getElementById("ebookClose").addEventListener("click", closeEbook);
+    document.getElementById("ebookDone").addEventListener("click", closeEbook);
+    ebookModal.addEventListener("click", function (e) { if (e.target === ebookModal) closeEbook(); });
+    ebookForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var keys = [];
+      ebookPicks.querySelectorAll("input:checked").forEach(function (c) { keys.push(c.value); });
+      if (!keys.length) { ebookPicksErr.hidden = false; return; }
+      if (!ebookForm.checkValidity()) { ebookForm.reportValidity(); return; }
+      var lead = {
+        ebooks: keys,
+        nome: document.getElementById("e-nome").value.trim(),
+        email: document.getElementById("e-email").value.trim(),
+        telefone: document.getElementById("e-tel").value.trim(),
+        idioma: lang(),
+        data: new Date().toISOString()
+      };
+      var btn = ebookForm.querySelector('button[type="submit"]');
+      var sendErr = document.getElementById("ebookSendErr");
+      if (btn.disabled) return;
+      btn.disabled = true;
+      btn.textContent = tr("ebm_sending");
+      sendErr.hidden = true;
+      sendEbookMail(lead).then(function () {
+        saveEbookLead(lead);
+        trackEbookLead(keys);
+        ebookForm.reset();
+        ebookForm.hidden = true;
+        ebookOk.hidden = false;
+      }).catch(function () {
+        sendErr.hidden = false;
+      }).then(function () {
+        btn.disabled = false;
+        btn.textContent = tr("ebm_submit");
+      });
+    });
   }
 
   renderFleet();
@@ -322,8 +420,6 @@
     if (el && el.tagName === "A" && el.getAttribute("data-cta") !== "lead-submit") {
       trackLead(el.getAttribute("data-cta"));
     }
-    var eb = e.target.closest ? e.target.closest("[data-ebook]") : null;
-    if (eb) trackDownload(eb.getAttribute("data-ebook"));
   });
 
   var yearEl = document.getElementById("year");

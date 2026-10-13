@@ -283,7 +283,7 @@
     <div class="section__head reveal">
       <span class="eyebrow" data-i18n="eb_eyebrow">Ebooks da Summit</span>
       <h2 data-i18n="eb_h2">Guias para planejar a sua viagem</h2>
-      <p data-i18n="eb_p">Baixe os materiais da Summit e chegue a Orlando com tudo organizado.</p>
+      <p data-i18n="eb_p">Escolha os materiais que quiser e receba tudo no seu e-mail.</p>
     </div>
     <div class="ebooks" id="ebooksGrid"></div>
   </div>
@@ -384,6 +384,45 @@
     <button type="button" class="btn btn--ghost" id="consentReject" data-cta="consent-reject" style="color:var(--azul);border-color:var(--linha)" data-i18n="consent_reject">Recusar</button>
   </div>
 </div>
+
+<dialog class="modal" id="ebookModal" aria-labelledby="ebookModalTitle">
+  <div class="modal__box">
+    <button type="button" class="modal__close" id="ebookClose" aria-label="Fechar" data-i18n-aria="ebm_close">×</button>
+    <form id="ebookForm" novalidate>
+      <h3 id="ebookModalTitle" data-i18n="ebm_title">Receba no seu e-mail</h3>
+      <p class="lead-card__sub" data-i18n="ebm_sub">Preencha uma vez e receba todos os que marcar.</p>
+      <fieldset class="ebook-picks">
+        <legend data-i18n="ebm_picks">Quais ebooks você quer receber?</legend>
+        <div id="ebookPicks"></div>
+        <p class="ebook-picks__err" id="ebookPicksErr" hidden data-i18n="ebm_pick_err">Marque pelo menos um ebook.</p>
+      </fieldset>
+      <div class="field">
+        <label for="e-nome" data-i18n="form_nome">Nome</label>
+        <input type="text" id="e-nome" name="nome" placeholder="Seu nome" data-i18n-ph="form_nome_ph" autocomplete="name" required>
+      </div>
+      <div class="field">
+        <label for="e-email" data-i18n="ebm_email">E-mail</label>
+        <input type="email" id="e-email" name="email" placeholder="voce@email.com" data-i18n-ph="ebm_email_ph" autocomplete="email" required>
+      </div>
+      <div class="field">
+        <label for="e-tel" data-i18n="ebm_tel">Telefone / WhatsApp</label>
+        <input type="tel" id="e-tel" name="telefone" placeholder="(11) 99999-9999" data-i18n-ph="ebm_tel_ph" autocomplete="tel" required>
+      </div>
+      <div class="field-check">
+        <input type="checkbox" id="e-consent" name="consent" required>
+        <label for="e-consent" data-i18n-html="form_consent">Li e aceito a <a href="privacidade.html" target="_blank" rel="noopener">Política de Privacidade</a> e autorizo o contato pela Summit Rent a Car.</label>
+      </div>
+      <p class="ebook-picks__err" id="ebookSendErr" hidden data-i18n="ebm_send_err">Não foi possível enviar agora. Tente de novo em instantes ou fale com a gente no WhatsApp.</p>
+      <button type="submit" class="btn btn--primary btn--block btn--lg" data-i18n="ebm_submit">Quero receber</button>
+    </form>
+    <div class="modal__ok" id="ebookOk" hidden>
+      <span class="modal__ok-star" aria-hidden="true">✦</span>
+      <h3 data-i18n="ebm_ok_title">Tudo certo!</h3>
+      <p data-i18n="ebm_ok_text">Enviamos os ebooks para o seu e-mail. Se não encontrar em alguns minutos, confira a caixa de spam.</p>
+      <button type="button" class="btn btn--primary" id="ebookDone" data-i18n="ebm_done">Fechar</button>
+    </div>
+  </div>
+</dialog>
 
 <script src="assets/js/i18n.js"></script>
 <script src="assets/js/main.js"></script>
