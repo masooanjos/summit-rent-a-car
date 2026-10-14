@@ -73,6 +73,9 @@ p{margin:0 0 1em}
 .nav a:hover{color:var(--violeta)}
 .nav .btn--wa{display:none}
 .header__cta{display:inline-flex}
+.header__ig{display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;line-height:0;transition:transform .15s ease,opacity .15s ease}
+.header__ig:hover{transform:translateY(-1px) scale(1.06);opacity:.9}
+.header__ig img{width:34px;height:34px;display:block}
 .lang{display:inline-flex;gap:5px;align-items:center;flex:0 0 auto}
 .lang__btn{display:inline-flex;padding:4px;border:1.5px solid var(--linha);background:transparent;border-radius:8px;cursor:pointer;line-height:0;opacity:.45;transition:opacity .15s ease,border-color .15s ease}
 .lang__btn:hover{opacity:.8}

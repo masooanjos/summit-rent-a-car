@@ -254,6 +254,22 @@
     }
   }
 
+  function downloadEbook(key) {
+    var a = document.createElement("a");
+    a.href = "assets/ebooks/" + key + ".pdf";
+    a.download = key + ".pdf";
+    a.rel = "noopener";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
+
+  function downloadEbooks(keys) {
+    keys.forEach(function (k, i) {
+      setTimeout(function () { downloadEbook(k); }, i * 600);
+    });
+  }
+
   function saveEbookLead(lead) {
     try {
       var list = JSON.parse(localStorage.getItem(EBOOK_LEADS_KEY) || "[]");
@@ -315,8 +331,7 @@
       btn.disabled = true;
       btn.textContent = tr("ebm_sending");
       sendErr.hidden = true;
-      var chosen = ebooks.filter(function (b) { return keys.indexOf(b.key) >= 0; }).map(function (b) { return { key: b.key, title: pick(b, "t") }; });
-      var sending = window.SummitEbookMail ? window.SummitEbookMail.send(lead, chosen) : Promise.resolve();
+      var sending = Promise.resolve().then(function () { downloadEbooks(keys); });
       sending.then(function () {
         saveEbookLead(lead);
         trackEbookLead(keys);
