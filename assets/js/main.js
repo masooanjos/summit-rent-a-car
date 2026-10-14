@@ -101,7 +101,7 @@
   var fleet = [
     { cat: "Econômico", catEn: "Economy", price: 55, tagPt: "Mais econômico", tagEn: "Best value", seats: 5, bags: 2, img: "economico-car.jpg",
       descPt: "Econômico no combustível e perfeito para a cidade e passeios do dia a dia.", descEn: "Fuel-efficient and perfect for the city and day-to-day outings." },
-    { cat: "SUV", catEn: "SUV", price: 75, tagPt: "Mais procurado", tagEn: "Most popular", seats: 5, bags: 4, img: "suv-car.jpg",
+    { cat: "SUV", catEn: "SUV", price: 75, hl: true, tagPt: "Mais procurado", tagEn: "Most popular", seats: 5, bags: 4, img: "suv-car.jpg",
       descPt: "Espaço e conforto para a família com bastante porta-malas para as compras.", descEn: "Space and comfort for the family, with plenty of trunk room for the shopping." },
     { cat: "SUV Premium", catEn: "Premium SUV", price: 99, tagPt: "Conforto extra", tagEn: "Extra comfort", seats: 7, bags: 5, img: "suv-premium-car.jpg",
       descPt: "SUV maior, com mais lugares e sofisticação para viagens em grupo.", descEn: "A larger SUV with more seats and sophistication for group trips." },
@@ -134,7 +134,7 @@
     fleet.forEach(function (c) {
       var name = lang() === "en" ? c.catEn : c.cat;
       var art = document.createElement("article");
-      art.className = "car reveal in";
+      art.className = "car reveal in" + (c.hl ? " car--hl" : "");
       art.innerHTML =
         '<div class="car__media">' +
           '<span class="car__tag">' + pick(c, "tag") + "</span>" +
@@ -148,6 +148,7 @@
             "<span>" + ico(icoGear) + tr("trans_auto") + "</span>" +
           "</div>" +
           '<p class="car__desc">' + pick(c, "desc") + "</p>" +
+          '<p class="car__inc">' + ico('<path d="M20 6L9 17l-5-5"/>') + tr("car_inc") + "</p>" +
           '<div class="car__price"><span class="from">' + tr("car_from") + '</span><b>$' + c.price + "</b><small>" + tr("car_day") + "</small></div>" +
           '<a class="btn btn--primary btn--block" target="_blank" rel="noopener" data-cta="car-' +
             c.cat.toLowerCase().replace(/\s+/g, "-") + '" href="' + waCarMessage(name, c.price) + '">' + tr("car_book") + " " + name + "</a>" +
@@ -376,6 +377,18 @@
   }
 
   var form = document.getElementById("leadForm");
+  var pickUp = document.getElementById("f-retirada");
+  var dropOff = document.getElementById("f-devolucao");
+  if (pickUp && dropOff) {
+    var now = new Date();
+    var today = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+    pickUp.min = today;
+    dropOff.min = today;
+    pickUp.addEventListener("change", function () {
+      dropOff.min = pickUp.value || today;
+      if (dropOff.value && dropOff.value < pickUp.value) dropOff.value = "";
+    });
+  }
   if (form) {
     form.addEventListener("submit", function (e) {
       e.preventDefault();
@@ -555,34 +568,4 @@
     document.querySelectorAll("[data-sky]").forEach(initSky);
   }
 
-  if (!reduceMotion) {
-    var dustCount = 0, lastHover = 0, lastScroll = 0;
-    var dust = function (x, y) {
-      if (dustCount > 24) return;
-      dustCount++;
-      var s = document.createElement("span");
-      s.className = "dust";
-      s.setAttribute("aria-hidden", "true");
-      s.textContent = "✦";
-      s.style.left = x + "px";
-      s.style.top = y + "px";
-      s.style.fontSize = (8 + Math.random() * 10) + "px";
-      s.style.setProperty("--dx", (Math.random() * 44 - 22) + "px");
-      document.body.appendChild(s);
-      setTimeout(function () { s.remove(); dustCount--; }, 900);
-    };
-    document.addEventListener("mousemove", function (e) {
-      var now = Date.now();
-      if (now - lastHover < 70 || !e.target.closest || !e.target.closest(".btn")) return;
-      lastHover = now;
-      dust(e.clientX, e.clientY);
-    });
-    window.addEventListener("scroll", function () {
-      var now = Date.now();
-      if (now - lastScroll < 160) return;
-      lastScroll = now;
-      var side = Math.random() < 0.5 ? 0.02 + Math.random() * 0.05 : 0.93 + Math.random() * 0.05;
-      dust(window.innerWidth * side, window.innerHeight * (0.15 + Math.random() * 0.7));
-    }, { passive: true });
-  }
 })();
