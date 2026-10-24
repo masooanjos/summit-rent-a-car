@@ -333,10 +333,12 @@ p{margin:0 0 1em}
 .faq{display:grid;gap:12px}
 .faq details{background:var(--branco);border:1px solid var(--linha);border-radius:14px;transition:border-color .2s ease,box-shadow .2s ease}
 .faq details[open]{border-color:rgba(217,169,64,.6);box-shadow:var(--sombra)}
-.faq summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 22px;font-weight:600;color:var(--azul-900)}
+.faq summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 22px;font-weight:600;color:var(--azul-900);user-select:none}
 .faq summary::-webkit-details-marker{display:none}
-.faq summary::after{content:"+";flex:0 0 30px;height:30px;border-radius:50%;display:grid;place-items:center;background:var(--fundo-alt);color:var(--laranja-600);font-size:1.3rem;font-weight:500;transition:transform .2s ease}
-.faq details[open] summary::after{transform:rotate(45deg);background:var(--grad-ouro);color:#1d1503}
+.faq summary::after{content:"";flex:0 0 32px;width:32px;height:32px;border-radius:50%;background:var(--fundo-alt) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23c0912c' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat center/18px 18px;transition:transform .25s ease,background .25s ease,box-shadow .2s ease}
+.faq summary:hover::after{background-color:rgba(217,169,64,.2)}
+.faq details[open] summary::after{transform:rotate(180deg);background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231d1503' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat center/18px 18px,var(--grad-ouro)}
+.faq details[open] summary:hover::after{box-shadow:0 0 0 3px rgba(217,169,64,.3)}
 .faq details p{margin:0;padding:0 22px 20px;color:var(--cinza)}
 .cta__checks{position:relative;z-index:1;list-style:none;padding:0;margin:0 auto 28px;display:flex;flex-wrap:wrap;justify-content:center;gap:10px 22px;font-size:.95rem;color:rgba(255,255,255,.92)}
 .cta__checks li::before{content:"✓ ";color:var(--laranja);font-weight:800}
