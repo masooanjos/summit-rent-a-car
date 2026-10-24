@@ -77,6 +77,7 @@
       consent_text: 'Usamos cookies e tecnologias de medição (Google e Meta) para melhorar sua experiência e nossas campanhas. Ao aceitar, você concorda com a nossa <a href="privacidade.html" target="_blank" rel="noopener">Política de Privacidade</a>.',
       consent_accept: "Aceitar", consent_reject: "Recusar",
       wa_float: "Reservar",
+      back_to_top: "Voltar ao início",
       add_eyebrow: "Adicionais", add_h2: "Deixe a sua viagem ainda mais completa",
       add_p: "Inclua itens extras na sua locação. Escolha o adicional e fale com a gente no WhatsApp.",
       add_price: "Consulte", add_btn: "Quero este adicional",
@@ -196,6 +197,7 @@
       consent_text: 'We use cookies and measurement technologies (Google and Meta) to improve your experience and our campaigns. By accepting, you agree to our <a href="privacidade.html" target="_blank" rel="noopener">Privacy Policy</a>.',
       consent_accept: "Accept", consent_reject: "Decline",
       wa_float: "Book",
+      back_to_top: "Back to top",
       add_eyebrow: "Extras", add_h2: "Make your trip even more complete",
       add_p: "Add extra items to your rental. Pick an extra and chat with us on WhatsApp.",
       add_price: "Ask us", add_btn: "I want this extra",
@@ -272,6 +274,7 @@
     });
     setAttrAll("[data-i18n-ph]", "placeholder", "data-i18n-ph");
     setAttrAll("[data-i18n-aria]", "aria-label", "data-i18n-aria");
+    setAttrAll("[data-i18n-title]", "title", "data-i18n-title");
     setAttrAll("[data-i18n-alt]", "alt", "data-i18n-alt");
     document.querySelectorAll(".lang__btn").forEach(function (b) {
       b.setAttribute("aria-pressed", b.getAttribute("data-lang") === lang ? "true" : "false");

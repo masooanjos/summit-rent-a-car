@@ -477,6 +477,28 @@
 
   var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+  var backToTopBtn = document.getElementById("backToTop");
+  if (backToTopBtn) {
+    var toggleBackToTop = function () {
+      var scrollY = window.pageYOffset || document.documentElement.scrollTop || 0;
+      if (scrollY > 350) {
+        backToTopBtn.classList.add("is-visible");
+      } else {
+        backToTopBtn.classList.remove("is-visible");
+      }
+    };
+    window.addEventListener("scroll", toggleBackToTop, { passive: true });
+    toggleBackToTop();
+
+    backToTopBtn.addEventListener("click", function (e) {
+      e.preventDefault();
+      window.scrollTo({
+        top: 0,
+        behavior: reduceMotion ? "auto" : "smooth"
+      });
+    });
+  }
+
   var moments = document.getElementById("moments");
   var track = moments ? moments.querySelector(".moments__track") : null;
   if (track && !reduceMotion) {
