@@ -581,7 +581,7 @@
   <footer class="footer" data-sky>
     <div class="container">
       <div class="footer__grid">
-        <div>
+        <div class="footer__brand">
           <img class="footer__logo" src="assets/img/logo-summit-light.png" alt="Logo Summit Rent a Car" width="640"
             height="140" loading="lazy">
           <p data-i18n="foot_desc">Aluguel de carros em Orlando com atendimento 100% em português, sem caução e com
@@ -603,38 +603,50 @@
             </a>
           </div>
         </div>
-        <div>
+        <div class="footer__nav">
           <h4 data-i18n="foot_nav_title">Navegação</h4>
-          <a href="#frota" data-i18n="foot_nav_frota">Nossa frota</a>
-          <a href="#diferenciais" data-i18n="foot_nav_dif">Diferenciais</a>
-          <a href="#duvidas" data-i18n="nav_faq">Dúvidas</a>
-          <a href="#sobre" data-i18n="foot_nav_sobre">Sobre a Summit</a>
-          <a href="#depoimentos" data-i18n="foot_nav_dep">Depoimentos</a>
-          <a href="#reservar" data-i18n="foot_nav_reservar">Reservar agora</a>
-          <a href="privacidade.html" data-i18n="foot_nav_priv">Política de Privacidade</a>
+          <div class="footer__links">
+            <a href="#frota" data-i18n="foot_nav_frota">Nossa frota</a>
+            <a href="#diferenciais" data-i18n="foot_nav_dif">Diferenciais</a>
+            <a href="#duvidas" data-i18n="nav_faq">Dúvidas</a>
+            <a href="#sobre" data-i18n="foot_nav_sobre">Sobre a Summit</a>
+            <a href="#depoimentos" data-i18n="foot_nav_dep">Depoimentos</a>
+            <a href="#reservar" data-i18n="foot_nav_reservar">Reservar agora</a>
+            <a href="privacidade.html" data-i18n="foot_nav_priv">Política de Privacidade</a>
+          </div>
         </div>
-        <div class="footer__contact">
+        <div class="footer__contact footer__contact-box">
           <h4 data-i18n="foot_contact_title">Contato</h4>
-          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-              stroke-linejoin="round">
-              <path
-                d="M22 16.92v3a2 2 0 01-2.18 2A19.8 19.8 0 013 5.18 2 2 0 015 3h3a2 2 0 012 1.72c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L9.1 10.9a16 16 0 006 6l1.26-1.27a2 2 0 012.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0122 16.92z" />
-            </svg> +1 (689) 327-8539</span>
-          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-              stroke-linejoin="round">
-              <rect x="2" y="4" width="20" height="16" rx="2" />
-              <path d="M22 6l-10 7L2 6" />
-            </svg> contato.summitorlando@gmail.com</span>
-          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-              stroke-linejoin="round">
-              <circle cx="12" cy="12" r="10" />
-              <path d="M12 6v6l4 2" />
-            </svg> <span data-i18n="foot_hours">Seg a Sex, 8h às 18h</span></span>
-          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-              stroke-linejoin="round">
-              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
-              <circle cx="12" cy="10" r="3" />
-            </svg> <span data-i18n="foot_location">Orlando, Flórida — EUA</span></span>
+          <div class="footer__contact-list">
+            <a href="tel:+16893278539">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <path
+                  d="M22 16.92v3a2 2 0 01-2.18 2A19.8 19.8 0 013 5.18 2 2 0 015 3h3a2 2 0 012 1.72c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L9.1 10.9a16 16 0 006 6l1.26-1.27a2 2 0 012.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0122 16.92z" />
+              </svg> <span>+1 (689) 327-8539</span>
+            </a>
+            <a href="mailto:contato.summitorlando@gmail.com">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <rect x="2" y="4" width="20" height="16" rx="2" />
+                <path d="M22 6l-10 7L2 6" />
+              </svg> <span>contato.summitorlando@gmail.com</span>
+            </a>
+            <span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M12 6v6l4 2" />
+              </svg> <span data-i18n="foot_hours">Seg a Sex, 8h às 18h</span>
+            </span>
+            <span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
+                <circle cx="12" cy="10" r="3" />
+              </svg> <span data-i18n="foot_location">Orlando, Flórida — EUA</span>
+            </span>
+          </div>
         </div>
       </div>
       <div class="footer__bottom">
