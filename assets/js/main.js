@@ -62,7 +62,7 @@
     try { return localStorage.getItem(CONSENT_KEY); } catch (e) { return null; }
   }
   function setConsent(v) {
-    try { localStorage.setItem(CONSENT_KEY, v); } catch (e) {}
+    try { localStorage.setItem(CONSENT_KEY, v); } catch (e) { }
   }
   function initAnalytics() {
     if (analyticsStarted) return;
@@ -99,18 +99,30 @@
   function pick(o, base) { return lang() === "en" ? o[base + "En"] : o[base + "Pt"]; }
 
   var fleet = [
-    { cat: "Econômico", catEn: "Economy", price: 55, tagPt: "Mais econômico", tagEn: "Best value", seats: 5, bags: 2, img: "economico-car.jpg",
-      descPt: "Econômico no combustível e perfeito para a cidade e passeios do dia a dia.", descEn: "Fuel-efficient and perfect for the city and day-to-day outings." },
-    { cat: "SUV", catEn: "SUV", price: 75, hl: true, tagPt: "Mais procurado", tagEn: "Most popular", seats: 5, bags: 4, img: "suv-car.jpg",
-      descPt: "Espaço e conforto para a família com bastante porta-malas para as compras.", descEn: "Space and comfort for the family, with plenty of trunk room for the shopping." },
-    { cat: "SUV Premium", catEn: "Premium SUV", price: 99, tagPt: "Conforto extra", tagEn: "Extra comfort", seats: 7, bags: 5, img: "suv-premium-car.jpg",
-      descPt: "SUV maior, com mais lugares e sofisticação para viagens em grupo.", descEn: "A larger SUV with more seats and sophistication for group trips." },
-    { cat: "Premium", catEn: "Premium", price: 90, tagPt: "Experiência superior", tagEn: "Premium experience", seats: 5, bags: 3, img: "premium-car.jpg",
-      descPt: "Acabamento premium e aquele toque a mais de conforto na sua viagem.", descEn: "Premium finish and that extra touch of comfort on your trip." },
-    { cat: "Minivan", catEn: "Minivan", price: 95, tagPt: "Para grupos", tagEn: "For groups", seats: 7, bags: 6, img: "minivan-car.jpg",
-      descPt: "Ideal para famílias grandes e muita bagagem com espaço de sobra.", descEn: "Ideal for large families and plenty of luggage with room to spare." },
-    { cat: "Conversível", catEn: "Convertible", price: 110, tagPt: "Estilo", tagEn: "Style", seats: 4, bags: 2, img: "conversivel-car.jpg",
-      descPt: "Para sentir o clima da Flórida com o vento no rosto e muito estilo.", descEn: "To feel the Florida vibe with the wind in your hair and a lot of style." }
+    {
+      cat: "Econômico", catEn: "Economy", price: 55, tagPt: "Mais econômico", tagEn: "Best value", seats: 5, bags: 2, img: "economico.jpeg",
+      descPt: "Econômico no combustível e perfeito para a cidade e passeios do dia a dia.", descEn: "Fuel-efficient and perfect for the city and day-to-day outings."
+    },
+    {
+      cat: "SUV", catEn: "SUV", price: 75, hl: true, tagPt: "Mais procurado", tagEn: "Most popular", seats: 5, bags: 4, img: "suv.jpeg",
+      descPt: "Espaço e conforto para a família com bastante porta-malas para as compras.", descEn: "Space and comfort for the family, with plenty of trunk room for the shopping."
+    },
+    {
+      cat: "SUV Premium", catEn: "Premium SUV", price: 99, tagPt: "Conforto extra", tagEn: "Extra comfort", seats: 7, bags: 5, img: "suv_premium.jpeg",
+      descPt: "SUV maior, com mais lugares e sofisticação para viagens em grupo.", descEn: "A larger SUV with more seats and sophistication for group trips."
+    },
+    {
+      cat: "Premium", catEn: "Premium", price: 90, tagPt: "Experiência superior", tagEn: "Premium experience", seats: 5, bags: 3, img: "premium-car.jpg",
+      descPt: "Acabamento premium e aquele toque a mais de conforto na sua viagem.", descEn: "Premium finish and that extra touch of comfort on your trip."
+    },
+    {
+      cat: "Minivan", catEn: "Minivan", price: 95, tagPt: "Para grupos", tagEn: "For groups", seats: 7, bags: 6, img: "mini_van.jpeg",
+      descPt: "Ideal para famílias grandes e muita bagagem com espaço de sobra.", descEn: "Ideal for large families and plenty of luggage with room to spare."
+    },
+    {
+      cat: "Conversível", catEn: "Convertible", price: 110, tagPt: "Estilo", tagEn: "Style", seats: 4, bags: 2, img: "conversivel.jpg",
+      descPt: "Para sentir o clima da Flórida com o vento no rosto e muito estilo.", descEn: "To feel the Florida vibe with the wind in your hair and a lot of style."
+    }
   ];
 
   function ico(path) {
@@ -137,39 +149,51 @@
       art.className = "car reveal in" + (c.hl ? " car--hl" : "");
       art.innerHTML =
         '<div class="car__media">' +
-          '<span class="car__tag">' + pick(c, "tag") + "</span>" +
-          '<img src="assets/img/' + c.img + '" alt="' + name + ' - Summit Rent a Car Orlando" width="800" height="530" loading="lazy" decoding="async">' +
+        '<span class="car__tag">' + pick(c, "tag") + "</span>" +
+        '<img src="assets/img/' + c.img + '" alt="' + name + ' - Summit Rent a Car Orlando" width="800" height="530" loading="lazy" decoding="async">' +
         "</div>" +
         '<div class="car__body">' +
-          "<h3>" + name + "</h3>" +
-          '<div class="car__meta">' +
-            "<span>" + ico(icoSeat) + c.seats + " " + tr("unit_seats") + "</span>" +
-            "<span>" + ico(icoBag) + c.bags + " " + tr("unit_bags") + "</span>" +
-            "<span>" + ico(icoGear) + tr("trans_auto") + "</span>" +
-          "</div>" +
-          '<p class="car__desc">' + pick(c, "desc") + "</p>" +
-          '<p class="car__inc">' + ico('<path d="M20 6L9 17l-5-5"/>') + tr("car_inc") + "</p>" +
-          '<div class="car__price"><span class="from">' + tr("car_from") + '</span><b>$' + c.price + "</b><small>" + tr("car_day") + "</small></div>" +
-          '<a class="btn btn--primary btn--block" target="_blank" rel="noopener" data-cta="car-' +
-            c.cat.toLowerCase().replace(/\s+/g, "-") + '" href="' + waCarMessage(name, c.price) + '">' + tr("car_book") + " " + name + "</a>" +
+        "<h3>" + name + "</h3>" +
+        '<div class="car__meta">' +
+        "<span>" + ico(icoSeat) + c.seats + " " + tr("unit_seats") + "</span>" +
+        "<span>" + ico(icoBag) + c.bags + " " + tr("unit_bags") + "</span>" +
+        "<span>" + ico(icoGear) + tr("trans_auto") + "</span>" +
+        "</div>" +
+        '<p class="car__desc">' + pick(c, "desc") + "</p>" +
+        '<p class="car__inc">' + ico('<path d="M20 6L9 17l-5-5"/>') + tr("car_inc") + "</p>" +
+        '<div class="car__price"><span class="from">' + tr("car_from") + '</span><b>$' + c.price + "</b><small>" + tr("car_day") + "</small></div>" +
+        '<a class="btn btn--primary btn--block" target="_blank" rel="noopener" data-cta="car-' +
+        c.cat.toLowerCase().replace(/\s+/g, "-") + '" href="' + waCarMessage(name, c.price) + '">' + tr("car_book") + " " + name + "</a>" +
         "</div>";
       fleetEl.appendChild(art);
     });
   }
 
   var feats = [
-    { tPt: "Atendimento 100% em português", tEn: "Friendly bilingual service", dPt: "Do primeiro contato ao último dia da viagem, você é atendido no seu idioma.", dEn: "From the first contact to your last day, you're helped in your own language.",
-      p: '<path d="M3 5h12v9H8l-4 4v-4H3z" /><path d="M21 9v10l-4-4h-6"/>' },
-    { tPt: "Não cobramos caução", tEn: "No deposit required", dPt: "Sem bloqueio de valor alto no cartão. Menos burocracia para você viajar tranquilo.", dEn: "No large hold on your card. Less hassle so you can travel with peace of mind.",
-      p: '<path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6z"/><path d="M9 12l2 2 4-4"/>' },
-    { tPt: "Seguro de automóvel incluso", tEn: "Car insurance included", dPt: "Você roda protegido, com seguro já incluído na sua locação.", dEn: "You drive protected, with insurance already included in your rental.",
-      p: '<path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6z"/>' },
-    { tPt: "Tag E-Pass incluso", tEn: "E-Pass toll tag included", dPt: "Passe pelos pedágios sem parar e sem dor de cabeça. Já vai no carro.", dEn: "Breeze through tolls without stopping. It already comes in the car.",
-      p: '<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h8M8 15h5"/>' },
-    { tPt: "Sem filas", tEn: "No lines", dPt: "Processo ágil e organizado na retirada. Seu tempo de viagem não se perde em balcão.", dEn: "A quick, organized pick-up. Your trip time isn't wasted at a counter.",
-      p: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>' },
-    { tPt: "Suporte durante toda a viagem", tEn: "Support throughout your trip", dPt: "Qualquer dúvida, é só chamar no WhatsApp. A gente acompanha você o tempo todo.", dEn: "Any question, just message us on WhatsApp. We're with you the whole way.",
-      p: '<path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>' }
+    {
+      tPt: "Atendimento 100% em português", tEn: "Friendly bilingual service", dPt: "Do primeiro contato ao último dia da viagem, você é atendido no seu idioma.", dEn: "From the first contact to your last day, you're helped in your own language.",
+      p: '<path d="M3 5h12v9H8l-4 4v-4H3z" /><path d="M21 9v10l-4-4h-6"/>'
+    },
+    {
+      tPt: "Não cobramos caução", tEn: "No deposit required", dPt: "Sem bloqueio de valor alto no cartão. Menos burocracia para você viajar tranquilo.", dEn: "No large hold on your card. Less hassle so you can travel with peace of mind.",
+      p: '<path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6z"/><path d="M9 12l2 2 4-4"/>'
+    },
+    {
+      tPt: "Seguro de automóvel incluso", tEn: "Car insurance included", dPt: "Você roda protegido, com seguro já incluído na sua locação.", dEn: "You drive protected, with insurance already included in your rental.",
+      p: '<path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6z"/>'
+    },
+    {
+      tPt: "Tag E-Pass incluso", tEn: "E-Pass toll tag included", dPt: "Passe pelos pedágios sem parar e sem dor de cabeça. Já vai no carro.", dEn: "Breeze through tolls without stopping. It already comes in the car.",
+      p: '<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h8M8 15h5"/>'
+    },
+    {
+      tPt: "Sem filas", tEn: "No lines", dPt: "Processo ágil e organizado na retirada. Seu tempo de viagem não se perde em balcão.", dEn: "A quick, organized pick-up. Your trip time isn't wasted at a counter.",
+      p: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'
+    },
+    {
+      tPt: "Suporte durante toda a viagem", tEn: "Support throughout your trip", dPt: "Qualquer dúvida, é só chamar no WhatsApp. A gente acompanha você o tempo todo.", dEn: "Any question, just message us on WhatsApp. We're with you the whole way.",
+      p: '<path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>'
+    }
   ];
 
   var featsEl = document.getElementById("feats");
@@ -187,14 +211,22 @@
   }
 
   var extras = [
-    { key: "cadeirinha", nPt: "Cadeirinha infantil", nEn: "Child car seat", dPt: "Segurança e conforto para os pequenos durante todos os passeios.", dEn: "Safety and comfort for the little ones on every outing.", price: "",
-      p: '<path d="M8 3h8a2 2 0 012 2v8H6V5a2 2 0 012-2z"/><path d="M4 13h16v3a2 2 0 01-2 2H6a2 2 0 01-2-2z"/><path d="M8 18v3M16 18v3"/>' },
-    { key: "condutor", nPt: "Condutor adicional", nEn: "Additional driver", dPt: "Divida a direção com quem viaja com você, com tudo regularizado.", dEn: "Share the driving with your travel companion, all properly covered.", price: "",
-      p: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0113 0"/><path d="M18 8v6M15 11h6"/>' },
-    { key: "gps", nPt: "GPS", nEn: "GPS", dPt: "Chegue aos parques, outlets e restaurantes sem depender do celular.", dEn: "Get to the parks, outlets and restaurants without relying on your phone.", price: "",
-      p: '<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/>' },
-    { key: "wifi", nPt: "Wi-Fi móvel", nEn: "Mobile Wi-Fi", dPt: "Internet para toda a família, no carro e nos passeios.", dEn: "Internet for the whole family, in the car and on the go.", price: "",
-      p: '<path d="M2 9a15 15 0 0120 0M5.5 12.5a10 10 0 0113 0M9 16a5 5 0 016 0"/><circle cx="12" cy="19.5" r="1"/>' }
+    {
+      key: "cadeirinha", nPt: "Cadeirinha infantil", nEn: "Child car seat", dPt: "Segurança e conforto para os pequenos durante todos os passeios.", dEn: "Safety and comfort for the little ones on every outing.", price: "",
+      p: '<path d="M8 3h8a2 2 0 012 2v8H6V5a2 2 0 012-2z"/><path d="M4 13h16v3a2 2 0 01-2 2H6a2 2 0 01-2-2z"/><path d="M8 18v3M16 18v3"/>'
+    },
+    {
+      key: "carrinho-bebe", nPt: "Carrinho de bebê", nEn: "Single stroller", dPt: "Praticidade e conforto para os pequenos aproveitarem os parques sem cansaço.", dEn: "Comfort and ease for the little ones to enjoy the theme parks with no rush.", price: "",
+      p: '<path d="M3 5h3l2.5 6"/><path d="M8.5 11a4.5 4.5 0 019 0"/><path d="M8.5 11h9.5l-1.5 5h-7z"/><circle cx="8" cy="20" r="2"/><circle cx="18" cy="20" r="2"/><path d="M9.5 16l-1.5 2M16.5 16l1.5 2"/>'
+    },
+    {
+      key: "carrinho-duplo", nPt: "Carrinho de bebê duplo", nEn: "Double stroller", dPt: "A melhor escolha para famílias com duas crianças curtirem os dias de parque.", dEn: "The best choice for families with two kids enjoying full park days.", price: "",
+      p: '<path d="M2 5h3l2 5"/><path d="M7 10a3.5 3.5 0 017 0"/><path d="M14 10a3.5 3.5 0 017 0"/><path d="M7 10h14l-1.5 6h-11z"/><circle cx="7" cy="20" r="2"/><circle cx="19" cy="20" r="2"/><path d="M8.5 16l-1.5 2M17.5 16l1.5 2"/>'
+    },
+    {
+      key: "tanque-cheio", nPt: "Tanque cheio pré-pago", nEn: "Prepaid full tank", dPt: "Devolva o veículo sem a necessidade de abastecer antes do voo de volta.", dEn: "Return the vehicle without having to refuel before your flight back.", price: "",
+      p: '<path d="M3 22h12M4 9h10M14 22V4a2 2 0 00-2-2H6a2 2 0 00-2 2v18M14 13h2a2 2 0 012 2v2a2 2 0 002 2h0a2 2 0 002-2V9.8a2 2 0 00-.6-1.4L19 6"/>'
+    }
   ];
 
   function waExtraMessage(name) {
@@ -403,15 +435,15 @@
       }
       var msg = lang() === "en"
         ? "Hi! My name is " + nome + " and I'd like to rent a car with Summit.\n" +
-          "Category: " + categoria + "\n" +
-          "Pick-up: " + fmtDate(retirada) + "\n" +
-          "Drop-off: " + fmtDate(devolucao) + "\n" +
-          "Could you send me availability and prices?"
+        "Category: " + categoria + "\n" +
+        "Pick-up: " + fmtDate(retirada) + "\n" +
+        "Drop-off: " + fmtDate(devolucao) + "\n" +
+        "Could you send me availability and prices?"
         : "Olá! Meu nome é " + nome + " e quero reservar um carro na Summit.\n" +
-          "Categoria: " + categoria + "\n" +
-          "Retirada: " + fmtDate(retirada) + "\n" +
-          "Devolução: " + fmtDate(devolucao) + "\n" +
-          "Pode me enviar disponibilidade e valores?";
+        "Categoria: " + categoria + "\n" +
+        "Retirada: " + fmtDate(retirada) + "\n" +
+        "Devolução: " + fmtDate(devolucao) + "\n" +
+        "Pode me enviar disponibilidade e valores?";
       trackLead("lead-form");
       window.open(WHATSAPP_LINK + "?text=" + encodeURIComponent(msg), "_blank", "noopener");
     });
