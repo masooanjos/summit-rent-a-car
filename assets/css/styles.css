@@ -65,7 +65,10 @@ p{margin:0 0 1em}
 .btn--lg{padding:17px 32px;font-size:1.08rem}
 .btn svg{width:20px;height:20px;flex:0 0 auto}
 .header{position:sticky;top:0;z-index:50;background:rgba(255,253,248,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--linha)}
-.header::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:linear-gradient(90deg,transparent,var(--laranja) 30%,var(--ouro-claro) 50%,var(--laranja) 70%,transparent);opacity:.8}
+.header::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:linear-gradient(90deg,transparent,var(--laranja) 30%,var(--ouro-claro) 50%,var(--laranja) 70%,transparent);opacity:.8;transition:opacity .3s ease;pointer-events:none}
+.header.is-scrolled::after{opacity:0}
+.header__progress{position:absolute;left:0;bottom:-1px;height:2.5px;width:100%;background:linear-gradient(90deg,var(--laranja-600),var(--laranja) 55%,var(--ouro-claro) 88%,#ffffff);box-shadow:0 0 10px rgba(217,169,64,.65),0 0 2px rgba(241,220,166,.9);transform-origin:left center;transform:scaleX(0);opacity:0;transition:opacity .3s ease;pointer-events:none;z-index:2;will-change:transform,opacity}
+.header.is-scrolled .header__progress{opacity:1}
 .header__row{display:flex;align-items:center;justify-content:space-between;gap:16px;height:72px}
 .header__logo img{height:38px;width:auto}
 .nav{display:flex;align-items:center;gap:28px}

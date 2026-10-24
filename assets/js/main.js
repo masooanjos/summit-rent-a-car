@@ -477,19 +477,49 @@
 
   var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+  var headerEl = document.querySelector(".header");
   var backToTopBtn = document.getElementById("backToTop");
-  if (backToTopBtn) {
-    var toggleBackToTop = function () {
-      var scrollY = window.pageYOffset || document.documentElement.scrollTop || 0;
+  var headerProgress = document.getElementById("headerProgress");
+
+  function updateScrollState() {
+    var scrollY = window.pageYOffset || document.documentElement.scrollTop || 0;
+    if (headerEl) {
+      if (scrollY > 8) {
+        headerEl.classList.add("is-scrolled");
+      } else {
+        headerEl.classList.remove("is-scrolled");
+      }
+    }
+    if (backToTopBtn) {
       if (scrollY > 350) {
         backToTopBtn.classList.add("is-visible");
       } else {
         backToTopBtn.classList.remove("is-visible");
       }
-    };
-    window.addEventListener("scroll", toggleBackToTop, { passive: true });
-    toggleBackToTop();
+    }
+    if (headerProgress) {
+      var docHeight = (document.documentElement.scrollHeight || document.body.scrollHeight) - window.innerHeight;
+      var p = docHeight > 0 ? Math.min(Math.max(scrollY / docHeight, 0), 1) : 0;
+      headerProgress.style.transform = "scaleX(" + p + ")";
+    }
+  }
 
+  var scrollTicking = false;
+  function onScroll() {
+    if (!scrollTicking) {
+      window.requestAnimationFrame(function () {
+        updateScrollState();
+        scrollTicking = false;
+      });
+      scrollTicking = true;
+    }
+  }
+
+  window.addEventListener("scroll", onScroll, { passive: true });
+  window.addEventListener("resize", onScroll, { passive: true });
+  updateScrollState();
+
+  if (backToTopBtn) {
     backToTopBtn.addEventListener("click", function (e) {
       e.preventDefault();
       window.scrollTo({
