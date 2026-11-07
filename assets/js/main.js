@@ -2,7 +2,66 @@
   "use strict";
 
   var WHATSAPP_NUMBER = "16893278539";
-  var WHATSAPP_LINK = "https://wa.me/message/4N75YRONU7H5L1";
+  var WHATSAPP_BASE = "https://wa.me/" + WHATSAPP_NUMBER;
+  var WHATSAPP_LINK = WHATSAPP_BASE;
+
+  function waUrl(text) {
+    return text ? WHATSAPP_BASE + "?text=" + encodeURIComponent(text) : WHATSAPP_BASE;
+  }
+
+  var WA_MESSAGES = {
+    "nav-wa": {
+      pt: "Olá! Estava no menu do site da Summit e gostaria de tirar algumas dúvidas sobre o aluguel de carros em Orlando.",
+      en: "Hi! I was in the menu on Summit's website and have a few questions about renting a car in Orlando."
+    },
+    "header-wa": {
+      pt: "Olá! Gostaria de fazer uma cotação para alugar um carro em Orlando com a Summit. Poderiam me ajudar?",
+      en: "Hi! I'd like to get a quote to rent a car in Orlando with Summit. Could you help me?"
+    },
+    "hero-wa": {
+      pt: "Olá! Vi as condições da Summit (sem caução, seguro e pedágio inclusos) e gostaria de consultar valores e disponibilidade para a minha viagem a Orlando.",
+      en: "Hi! I saw Summit's terms (no deposit, insurance and toll tag included) and would like to check prices and availability for my trip to Orlando."
+    },
+    "steps-wa": {
+      pt: "Olá! Gostaria de iniciar minha reserva de carro em Orlando pelo passo a passo sem burocracia da Summit.",
+      en: "Hi! I'd like to start my car rental reservation in Orlando following Summit's simple booking steps."
+    },
+    "exp-wa": {
+      pt: "Olá! Quero planejar minha viagem a Orlando com atendimento em português e sem filas. Como posso reservar meu carro com a Summit?",
+      en: "Hi! I want to plan my trip to Orlando with friendly service and no lines. How can I reserve my car with Summit?"
+    },
+    "about-wa": {
+      pt: "Olá! Conheci a história da Summit pelo site e gostaria de falar com a equipe sobre o aluguel de carro para a minha viagem.",
+      en: "Hi! I read about Summit on your website and would like to talk to your team about renting a car for my trip."
+    },
+    "faq-wa": {
+      pt: "Olá! Estava lendo as dúvidas frequentes no site e ainda tenho uma pergunta sobre a locação. Poderiam me orientar?",
+      en: "Hi! I was reading the FAQ on your website and still have a question about renting. Could you help me out?"
+    },
+    "final-wa": {
+      pt: "Olá! Estou pronto para pegar a estrada em Orlando e quero garantir meu carro com a Summit. Pode me passar os próximos passos?",
+      en: "Hi! I'm ready to hit the road in Orlando and want to lock in my car with Summit. Could you guide me through the next steps?"
+    },
+    "float-wa": {
+      pt: "Olá! Estou no site da Summit Rent a Car e gostaria de atendimento pelo WhatsApp.",
+      en: "Hi! I'm on the Summit Rent a Car website and would like some assistance on WhatsApp."
+    },
+    "footer-wa": {
+      pt: "Olá! Encontrei o contato da Summit no rodapé do site e gostaria de solicitar um atendimento.",
+      en: "Hi! I found Summit's contact on your website footer and would like to get in touch."
+    }
+  };
+
+  function updateWaCtaLinks() {
+    var l = lang();
+    document.querySelectorAll("[data-cta]").forEach(function (el) {
+      var ctaKey = el.getAttribute("data-cta");
+      if (WA_MESSAGES[ctaKey]) {
+        var msg = WA_MESSAGES[ctaKey][l] || WA_MESSAGES[ctaKey].pt;
+        el.setAttribute("href", waUrl(msg));
+      }
+    });
+  }
 
   var GTM_ID = "GTM-XXXXXXX";
   var GA4_ID = "G-XXXXXXXXXX";
@@ -136,7 +195,7 @@
     var txt = lang() === "en"
       ? "Hi! I'm interested in renting the *" + name + "* (from $" + price + "/day) in Orlando. Could you send me availability and prices?"
       : "Olá! Tenho interesse no aluguel do carro *" + name + "* (a partir de $" + price + "/dia) em Orlando. Pode me passar disponibilidade e valores?";
-    return WHATSAPP_LINK + "?text=" + encodeURIComponent(txt);
+    return waUrl(txt);
   }
 
   var fleetEl = document.getElementById("fleet");
@@ -233,7 +292,7 @@
     var txt = lang() === "en"
       ? "Hi! I'd like to add the extra *" + name + "* to my rental in Orlando. Could you send me prices and availability?"
       : "Olá! Quero incluir o adicional *" + name + "* na minha locação em Orlando. Pode me passar valores e disponibilidade?";
-    return WHATSAPP_LINK + "?text=" + encodeURIComponent(txt);
+    return waUrl(txt);
   }
 
   var extrasEl = document.getElementById("extras");
@@ -415,7 +474,16 @@
   renderExtras();
   renderFeats();
   renderEbooks();
-  if (window.I18N) window.I18N.onChange(function () { renderFleet(); renderExtras(); renderFeats(); renderEbooks(); });
+  updateWaCtaLinks();
+  if (window.I18N) {
+    window.I18N.onChange(function () {
+      renderFleet();
+      renderExtras();
+      renderFeats();
+      renderEbooks();
+      updateWaCtaLinks();
+    });
+  }
 
   var toggle = document.getElementById("navToggle");
   var nav = document.getElementById("nav");
@@ -437,6 +505,26 @@
     var p = v.split("-");
     if (p.length !== 3) return v;
     return lang() === "en" ? p[1] + "/" + p[2] + "/" + p[0] : p[2] + "/" + p[1] + "/" + p[0];
+  }
+
+  function calcDays(d1, d2) {
+    if (!d1 || !d2) return 0;
+    var t1 = new Date(d1 + "T00:00:00").getTime();
+    var t2 = new Date(d2 + "T00:00:00").getTime();
+    if (isNaN(t1) || isNaN(t2) || t2 < t1) return 0;
+    var days = Math.round((t2 - t1) / (1000 * 60 * 60 * 24));
+    return days > 0 ? days : 1;
+  }
+
+  var BOOKING_LEADS_KEY = "summit_booking_leads";
+  function saveBookingLead(lead) {
+    try {
+      var list = JSON.parse(localStorage.getItem(BOOKING_LEADS_KEY) || "[]");
+      if (!Array.isArray(list)) list = [];
+      list.push(lead);
+      localStorage.setItem(BOOKING_LEADS_KEY, JSON.stringify(list));
+      return true;
+    } catch (e) { return false; }
   }
 
   var form = document.getElementById("leadForm");
@@ -464,26 +552,63 @@
         form.reportValidity();
         return;
       }
-      var msg = lang() === "en"
-        ? "Hi! My name is " + nome + " and I'd like to rent a car with Summit.\n" +
-        "Category: " + categoria + "\n" +
-        "Pick-up: " + fmtDate(retirada) + "\n" +
-        "Drop-off: " + fmtDate(devolucao) + "\n" +
-        "Could you send me availability and prices?"
-        : "Olá! Meu nome é " + nome + " e quero reservar um carro na Summit.\n" +
-        "Categoria: " + categoria + "\n" +
-        "Retirada: " + fmtDate(retirada) + "\n" +
-        "Devolução: " + fmtDate(devolucao) + "\n" +
-        "Pode me enviar disponibilidade e valores?";
+
+      var isEn = lang() === "en";
+      var days = calcDays(retirada, devolucao);
+      var daysStr = days > 0
+        ? (isEn ? " (" + days + " " + (days === 1 ? "day" : "days") + ")" : " (" + days + " " + (days === 1 ? "diária" : "diárias") + ")")
+        : "";
+
+      var catObj = fleet.filter(function (c) { return c.cat === categoria; })[0];
+      var catDisplay = catObj
+        ? (isEn ? catObj.catEn + " (from $" + catObj.price + "/day)" : catObj.cat + " (a partir de $" + catObj.price + "/dia)")
+        : categoria;
+
+      var msg = isEn
+        ? "Hi! My name is *" + nome + "* and I'd like to book a car rental with Summit in Orlando.\n\n" +
+          "📋 *Booking details:*\n" +
+          "• Category: *" + catDisplay + "*\n" +
+          "• Pick-up: *" + fmtDate(retirada) + "*\n" +
+          "• Drop-off: *" + fmtDate(devolucao) + "*" + daysStr + "\n\n" +
+          "Could you please confirm availability and send me the quote with payment options? Thank you!"
+        : "Olá! Meu nome é *" + nome + "* e gostaria de agendar uma locação com a Summit em Orlando.\n\n" +
+          "📋 *Dados do agendamento:*\n" +
+          "• Categoria: *" + catDisplay + "*\n" +
+          "• Retirada: *" + fmtDate(retirada) + "*\n" +
+          "• Devolução: *" + fmtDate(devolucao) + "*" + daysStr + "\n\n" +
+          "Poderiam me confirmar a disponibilidade e enviar a cotação com as opções de pagamento? Obrigado!";
+
+      saveBookingLead({
+        nome: nome,
+        retirada: retirada,
+        devolucao: devolucao,
+        categoria: categoria,
+        dias: days,
+        idioma: lang(),
+        data: new Date().toISOString()
+      });
+
       trackLead("lead-form");
-      window.open(WHATSAPP_LINK + "?text=" + encodeURIComponent(msg), "_blank", "noopener");
+
+      var targetUrl = waUrl(msg);
+      var win = window.open(targetUrl, "_blank", "noopener");
+      if (!win || win.closed || typeof win.closed === "undefined") {
+        window.location.href = targetUrl;
+      }
     });
   }
 
   document.addEventListener("click", function (e) {
     var el = e.target.closest ? e.target.closest("[data-cta]") : null;
-    if (el && el.tagName === "A" && el.getAttribute("data-cta") !== "lead-submit") {
-      trackLead(el.getAttribute("data-cta"));
+    if (!el || el.tagName !== "A") return;
+    var ctaKey = el.getAttribute("data-cta");
+    if (ctaKey !== "lead-submit") {
+      trackLead(ctaKey);
+    }
+    if (WA_MESSAGES[ctaKey]) {
+      var l = lang();
+      var msg = WA_MESSAGES[ctaKey][l] || WA_MESSAGES[ctaKey].pt;
+      el.setAttribute("href", waUrl(msg));
     }
   });
 
