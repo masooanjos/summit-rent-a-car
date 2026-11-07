@@ -100,27 +100,27 @@
 
   var fleet = [
     {
-      cat: "Econômico", catEn: "Economy", price: 55, tagPt: "Mais econômico", tagEn: "Best value", seats: 5, bags: 2, img: "economico.jpeg",
+      cat: "Econômico", catEn: "Economy", price: 55, tagPt: "Mais econômico", tagEn: "Best value", seats: 5, bags: 2, img: "economico.webp",
       descPt: "Econômico no combustível e perfeito para a cidade e passeios do dia a dia.", descEn: "Fuel-efficient and perfect for the city and day-to-day outings."
     },
     {
-      cat: "SUV", catEn: "SUV", price: 75, hl: true, tagPt: "Mais procurado", tagEn: "Most popular", seats: 5, bags: 4, img: "suv.jpeg",
+      cat: "SUV", catEn: "SUV", price: 75, hl: true, tagPt: "Mais procurado", tagEn: "Most popular", seats: 5, bags: 4, img: "suv.webp",
       descPt: "Espaço e conforto para a família com bastante porta-malas para as compras.", descEn: "Space and comfort for the family, with plenty of trunk room for the shopping."
     },
     {
-      cat: "SUV Premium", catEn: "Premium SUV", price: 99, tagPt: "Conforto extra", tagEn: "Extra comfort", seats: 7, bags: 5, img: "suv_premium.jpeg",
+      cat: "SUV Premium", catEn: "Premium SUV", price: 99, tagPt: "Conforto extra", tagEn: "Extra comfort", seats: 7, bags: 5, img: "suv_premium.webp",
       descPt: "SUV maior, com mais lugares e sofisticação para viagens em grupo.", descEn: "A larger SUV with more seats and sophistication for group trips."
     },
     {
-      cat: "Premium", catEn: "Premium", price: 90, tagPt: "Experiência superior", tagEn: "Premium experience", seats: 5, bags: 3, img: "premium-car.jpg",
+      cat: "Premium", catEn: "Premium", price: 90, tagPt: "Experiência superior", tagEn: "Premium experience", seats: 5, bags: 3, img: "premium.webp",
       descPt: "Acabamento premium e aquele toque a mais de conforto na sua viagem.", descEn: "Premium finish and that extra touch of comfort on your trip."
     },
     {
-      cat: "Minivan", catEn: "Minivan", price: 95, tagPt: "Para grupos", tagEn: "For groups", seats: 7, bags: 6, img: "mini_van.jpeg",
+      cat: "Minivan", catEn: "Minivan", price: 95, tagPt: "Para grupos", tagEn: "For groups", seats: 7, bags: 6, img: "mini_van.webp",
       descPt: "Ideal para famílias grandes e muita bagagem com espaço de sobra.", descEn: "Ideal for large families and plenty of luggage with room to spare."
     },
     {
-      cat: "Conversível", catEn: "Convertible", price: 110, tagPt: "Estilo", tagEn: "Style", seats: 4, bags: 2, img: "conversivel.jpg",
+      cat: "Conversível", catEn: "Convertible", price: 110, tagPt: "Estilo", tagEn: "Style", seats: 4, bags: 2, img: "conversivel.webp",
       descPt: "Para sentir o clima da Flórida com o vento no rosto e muito estilo.", descEn: "To feel the Florida vibe with the wind in your hair and a lot of style."
     }
   ];
@@ -256,11 +256,15 @@
   var EBOOK_LEADS_KEY = "summit_ebook_leads";
 
   var ebooks = [
-    { key: "primeira-viagem", tPt: "Guia da primeira viagem a Orlando", tEn: "First trip to Orlando guide", dPt: "O passo a passo para planejar a viagem em família, do embarque à volta para casa.", dEn: "A step-by-step guide to planning your family trip, from departure to the way home." },
-    { key: "dirigindo-na-florida", tPt: "Dirigindo na Flórida", tEn: "Driving in Florida", dPt: "Pedágios, regras de trânsito e estacionamento para dirigir tranquilo.", dEn: "Tolls, traffic rules and parking for a stress-free drive." },
-    { key: "roteiro-de-compras", tPt: "Roteiro de compras em Orlando", tEn: "Orlando shopping guide", dPt: "Outlets, lojas e os melhores horários para aproveitar sem perder tempo.", dEn: "Outlets, stores and the best times to shop without wasting time." },
-    { key: "parques-com-criancas", tPt: "Parques com crianças", tEn: "Theme parks with kids", dPt: "Como organizar os dias de parque com os pequenos, sem correria.", dEn: "How to plan park days with the little ones, without the rush." },
-    { key: "orlando-no-orcamento", tPt: "Orlando sem estourar o orçamento", tEn: "Orlando on a budget", dPt: "Onde economizar em hospedagem, alimentação e deslocamento.", dEn: "Where to save on lodging, food and getting around." }
+    {
+      key: "guia-de-bolso-orlando",
+      filePt: "guia-de-bolso-orlando.pdf",
+      fileEn: "orlando-pocket-guide-en.pdf",
+      tPt: "Guia de Bolso: O que fazer em Orlando?",
+      tEn: "Pocket Guide: What to do in Orlando?",
+      dPt: "Dicas práticas, parques, compras, melhores rotas e experiências inesquecíveis para aproveitar cada minuto.",
+      dEn: "Practical tips, theme parks, shopping, best routes and unforgettable experiences to make the most of your trip."
+    }
   ];
 
   var ebooksEl = document.getElementById("ebooksGrid");
@@ -281,16 +285,33 @@
     if (ebookPicks) {
       var checked = {};
       ebookPicks.querySelectorAll("input:checked").forEach(function (c) { checked[c.value] = true; });
+      var single = ebooks.length === 1;
       ebookPicks.innerHTML = ebooks.map(function (b) {
-        return '<label><input type="checkbox" name="ebooks" value="' + b.key + '"' + (checked[b.key] ? " checked" : "") + "> " + pick(b, "t") + "</label>";
+        var isChecked = single || checked[b.key];
+        return '<label><input type="checkbox" name="ebooks" value="' + b.key + '"' + (isChecked ? " checked" : "") + "> " + pick(b, "t") + "</label>";
       }).join("");
+      var fieldset = ebookPicks.closest ? ebookPicks.closest(".ebook-picks") : ebookPicks.parentElement;
+      if (fieldset) fieldset.hidden = single;
     }
   }
 
+  function getEbookFile(key, currentLang) {
+    var l = currentLang || lang();
+    var book = ebooks.filter(function (b) { return b.key === key; })[0];
+    if (book) {
+      return (l === "en" ? (book.fileEn || book.filePt) : book.filePt) || (book.key + ".pdf");
+    }
+    if (key === "guia-de-bolso-orlando") {
+      return l === "en" ? "orlando-pocket-guide-en.pdf" : "guia-de-bolso-orlando.pdf";
+    }
+    return key + ".pdf";
+  }
+
   function downloadEbook(key) {
+    var fileName = getEbookFile(key, lang());
     var a = document.createElement("a");
-    a.href = "assets/ebooks/" + key + ".pdf";
-    a.download = key + ".pdf";
+    a.href = "assets/ebooks/" + fileName;
+    a.download = fileName;
     a.rel = "noopener";
     document.body.appendChild(a);
     a.click();
@@ -364,6 +385,16 @@
       btn.disabled = true;
       btn.textContent = tr("ebm_sending");
       sendErr.hidden = true;
+      if (window.SummitEbookMail) {
+        var chosen = ebooks.filter(function (b) { return keys.indexOf(b.key) >= 0; }).map(function (b) {
+          return {
+            key: b.key,
+            title: pick(b, "t"),
+            file: getEbookFile(b.key, lead.idioma)
+          };
+        });
+        try { window.SummitEbookMail.send(lead, chosen).catch(function () {}); } catch (e) {}
+      }
       var sending = Promise.resolve().then(function () { downloadEbooks(keys); });
       sending.then(function () {
         saveEbookLead(lead);

@@ -23,7 +23,10 @@
       ? "Hi, " + lead.nome + "! Here are the ebooks you asked for. Just open the links below to download them."
       : "Olá, " + lead.nome + "! Aqui estão os ebooks que você pediu. É só abrir os links abaixo para baixar.";
     books.forEach(function (b) {
-      body[b.title] = new URL(PDF_DIR + b.key + ".pdf", document.baseURI).href;
+      var file = b.file || (en
+        ? (b.fileEn || (b.key === "guia-de-bolso-orlando" ? "orlando-pocket-guide-en.pdf" : b.key + ".pdf"))
+        : (b.filePt || (b.key === "guia-de-bolso-orlando" ? "guia-de-bolso-orlando.pdf" : b.key + ".pdf")));
+      body[b.title] = new URL(PDF_DIR + file, document.baseURI).href;
     });
     body[en ? "Name" : "Nome"] = lead.nome;
     body["E-mail"] = lead.email;
