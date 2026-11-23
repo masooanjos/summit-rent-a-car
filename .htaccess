@@ -1,0 +1,78 @@
+# =====================================================================
+#  Summit Rent a Car - configuração de segurança (Apache / HostGator)
+#  Mantenha este arquivo na raiz do site (public_html).
+#  Se o cPanel adicionar linhas de versão do PHP (AddHandler / "php8x"),
+#  deixe-as no final do arquivo.
+# =====================================================================
+
+# Sem listagem de diretórios e sem negociação de conteúdo
+Options -Indexes -MultiViews
+DirectoryIndex index.html
+ServerSignature Off
+AddDefaultCharset UTF-8
+
+# Tipos MIME corretos (necessário com X-Content-Type-Options: nosniff)
+<IfModule mod_mime.c>
+  AddType image/webp .webp
+  AddType image/svg+xml .svg
+  AddType application/pdf .pdf
+  AddType text/javascript .js
+  AddType text/css .css
+</IfModule>
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # 1) Força HTTPS
+  RewriteCond %{HTTPS} !=on
+  RewriteCond %{HTTP:X-Forwarded-Proto} !=https
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+  # 2) Domínio sem www -> com www (domínio canônico)
+  RewriteCond %{HTTP_HOST} ^summitorlando\.com\.br$ [NC]
+  RewriteRule ^ https://www.summitorlando.com.br%{REQUEST_URI} [L,R=301]
+
+  # 3) Bloqueia arquivos/pastas ocultos (.git, .gitignore, .env, .data...)
+  #    exceto .well-known (validação do SSL / AutoSSL)
+  RewriteRule (^|/)\.(?!well-known(/|$)) - [F,L]
+
+  # 4) Só GET/HEAD/POST
+  RewriteCond %{REQUEST_METHOD} !^(GET|HEAD|POST)$ [NC]
+  RewriteRule ^ - [F,L]
+</IfModule>
+
+# Bloqueia backups, arquivos compactados, logs e arquivos de configuração
+<FilesMatch "(?i)(\.(zip|rar|7z|tar|gz|tgz|bak|old|orig|save|swp|tmp|sql|sqlite|db|log|ini|env|conf|config|yml|yaml|md|psd|ai|sh|bat|ps1|lock)|~)$">
+  Require all denied
+</FilesMatch>
+<FilesMatch "(?i)^(composer\.(json|lock)|package(-lock)?\.json|Thumbs\.db|desktop\.ini|\.DS_Store)$">
+  Require all denied
+</FilesMatch>
+
+<IfModule mod_headers.c>
+  Header always unset X-Powered-By
+  Header unset X-Powered-By
+
+  # HSTS: navegador passa a usar só HTTPS (só ative após o SSL estar funcionando)
+  Header always set Strict-Transport-Security "max-age=31536000"
+
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "DENY"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=(), magnetometer=(), gyroscope=(), accelerometer=()"
+  Header always set Cross-Origin-Opener-Policy "same-origin-allow-popups"
+  Header always set X-Permitted-Cross-Domain-Policies "none"
+
+  # Content Security Policy
+  # Libera apenas: o próprio site, Google Fonts, Google Tag Manager/Analytics e Meta Pixel.
+  # Se adicionar outro serviço externo (ex.: Hotjar, chat), inclua o domínio aqui.
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' https://www.googletagmanager.com https://*.googletagmanager.com https://www.google-analytics.com https://connect.facebook.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://www.googletagmanager.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com https://www.google.com https://www.google.com.br https://www.facebook.com; connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://www.facebook.com https://connect.facebook.net; frame-src https://www.googletagmanager.com https://www.facebook.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests"
+
+  # HTML nunca em cache agressivo (sempre pega a versão mais recente)
+  <FilesMatch "\.(html?)$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+</IfModule>
+
+# Página de erro sem expor detalhes do servidor
+ErrorDocument 403 "Acesso negado."

@@ -1,0 +1,6 @@
+# Pasta de arquivos estáticos: nunca executar scripts aqui (defesa em profundidade)
+<FilesMatch "(?i)\.(php\d?|phtml|phar|pl|py|cgi|asp|aspx|jsp|sh|exe)$">
+  Require all denied
+</FilesMatch>
+Options -Indexes -ExecCGI
+

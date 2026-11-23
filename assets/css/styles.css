@@ -431,3 +431,6 @@ p{margin:0 0 1em}
   .moments.is-loop{overflow-x:auto}
   .btn::after{display:none}
 }
+
+/* Campo anti-spam (honeypot) - invisivel para pessoas */
+.hp-field{position:absolute!important;left:-10000px!important;top:auto;width:1px;height:1px;overflow:hidden}

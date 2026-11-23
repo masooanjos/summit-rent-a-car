@@ -312,7 +312,12 @@
     });
   }
 
-  var EBOOK_LEADS_KEY = "summit_ebook_leads";
+  // Dados pessoais (nome, e-mail, telefone) não são mais guardados no navegador do
+  // visitante. Remove o que versões anteriores do site possam ter salvo.
+  try {
+    localStorage.removeItem("summit_ebook_leads");
+    localStorage.removeItem("summit_booking_leads");
+  } catch (e) { }
 
   var ebooks = [
     {
@@ -383,16 +388,6 @@
     });
   }
 
-  function saveEbookLead(lead) {
-    try {
-      var list = JSON.parse(localStorage.getItem(EBOOK_LEADS_KEY) || "[]");
-      if (!Array.isArray(list)) list = [];
-      list.push(lead);
-      localStorage.setItem(EBOOK_LEADS_KEY, JSON.stringify(list));
-      return true;
-    } catch (e) { return false; }
-  }
-
   function trackEbookLead(keys) {
     var label = keys.join(",");
     if (window.dataLayer) window.dataLayer.push({ event: "ebook_lead", ebooks: label });
@@ -435,8 +430,7 @@
         nome: document.getElementById("e-nome").value.trim(),
         email: document.getElementById("e-email").value.trim(),
         telefone: document.getElementById("e-tel").value.trim(),
-        idioma: lang(),
-        data: new Date().toISOString()
+        idioma: lang()
       };
       var btn = ebookForm.querySelector('button[type="submit"]');
       var sendErr = document.getElementById("ebookSendErr");
@@ -456,7 +450,6 @@
       }
       var sending = Promise.resolve().then(function () { downloadEbooks(keys); });
       sending.then(function () {
-        saveEbookLead(lead);
         trackEbookLead(keys);
         ebookForm.reset();
         ebookForm.hidden = true;
@@ -516,17 +509,6 @@
     return days > 0 ? days : 1;
   }
 
-  var BOOKING_LEADS_KEY = "summit_booking_leads";
-  function saveBookingLead(lead) {
-    try {
-      var list = JSON.parse(localStorage.getItem(BOOKING_LEADS_KEY) || "[]");
-      if (!Array.isArray(list)) list = [];
-      list.push(lead);
-      localStorage.setItem(BOOKING_LEADS_KEY, JSON.stringify(list));
-      return true;
-    } catch (e) { return false; }
-  }
-
   var form = document.getElementById("leadForm");
   var pickUp = document.getElementById("f-retirada");
   var dropOff = document.getElementById("f-devolucao");
@@ -578,21 +560,13 @@
           "• Devolução: *" + fmtDate(devolucao) + "*" + daysStr + "\n\n" +
           "Poderiam me confirmar a disponibilidade e enviar a cotação com as opções de pagamento? Obrigado!";
 
-      saveBookingLead({
-        nome: nome,
-        retirada: retirada,
-        devolucao: devolucao,
-        categoria: categoria,
-        dias: days,
-        idioma: lang(),
-        data: new Date().toISOString()
-      });
-
       trackLead("lead-form");
 
       var targetUrl = waUrl(msg);
-      var win = window.open(targetUrl, "_blank", "noopener");
-      if (!win || win.closed || typeof win.closed === "undefined") {
+      var win = window.open(targetUrl, "_blank");
+      if (win) {
+        try { win.opener = null; } catch (err) { }
+      } else {
         window.location.href = targetUrl;
       }
     });

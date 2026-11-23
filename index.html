@@ -28,7 +28,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet"
     href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500;1,9..144,600&family=Inter:wght@400;500;600;700&display=swap">
-  <link rel="stylesheet" href="assets/css/styles.css?v=20261106b">
+  <link rel="stylesheet" href="assets/css/styles.css?v=20261122s">
   <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"AutoRental","name":"Summit Rent a Car","legalName":"Ride Pro Solutions Corp","image":"https://www.summitorlando.com.br/assets/img/logo-summit.png","url":"https://www.summitorlando.com.br/","telephone":"+1-689-327-8539","email":"contato.summitorlando@gmail.com","areaServed":"Orlando, Florida, USA","priceRange":"$55-$110 por dia","openingHours":"Mo-Fr 08:00-18:00","sameAs":["https://www.instagram.com/summitorlando"]}
 </script>
@@ -149,7 +149,7 @@
           <div class="field">
             <label for="f-nome" data-i18n="form_nome">Nome</label>
             <input type="text" id="f-nome" name="nome" placeholder="Seu nome" data-i18n-ph="form_nome_ph"
-              autocomplete="name" required>
+              autocomplete="name" maxlength="80" required>
           </div>
           <div class="field">
             <label for="f-retirada" data-i18n="form_retirada">Retirada</label>
@@ -701,22 +701,26 @@
         <div class="field">
           <label for="e-nome" data-i18n="form_nome">Nome</label>
           <input type="text" id="e-nome" name="nome" placeholder="Seu nome" data-i18n-ph="form_nome_ph"
-            autocomplete="name" required>
+            autocomplete="name" minlength="2" maxlength="80" required>
         </div>
         <div class="field">
           <label for="e-email" data-i18n="ebm_email">E-mail</label>
           <input type="email" id="e-email" name="email" placeholder="voce@email.com" data-i18n-ph="ebm_email_ph"
-            autocomplete="email" required>
+            autocomplete="email" maxlength="120" required>
         </div>
         <div class="field">
           <label for="e-tel" data-i18n="ebm_tel">Telefone / WhatsApp</label>
           <input type="tel" id="e-tel" name="telefone" placeholder="(11) 99999-9999" data-i18n-ph="ebm_tel_ph"
-            autocomplete="tel" required>
+            autocomplete="tel" minlength="6" maxlength="30" pattern="[0-9+()\-. ]{6,30}" required>
+        </div>
+        <div class="hp-field" aria-hidden="true">
+          <label for="e-website">Website</label>
+          <input type="text" id="e-website" name="website" tabindex="-1" autocomplete="off">
         </div>
         <div class="field-check">
           <input type="checkbox" id="e-consent" name="consent" required>
-          <label for="e-consent" data-i18n-html="form_consent">Li e aceito a <a href="privacidade.html" target="_blank"
-              rel="noopener">Política de Privacidade</a> e autorizo o contato pela Summit Rent a Car.</label>
+          <label for="e-consent" data-i18n-html="ebm_consent">Li e aceito a <a href="privacidade.html" target="_blank"
+              rel="noopener">Política de Privacidade</a> e autorizo a Summit Rent a Car a me enviar contatos e promoções por e-mail, telefone ou WhatsApp.</label>
         </div>
         <p class="ebook-picks__err" id="ebookSendErr" hidden data-i18n="ebm_send_err">Não foi possível baixar agora.
           Tente de novo em instantes ou fale com a gente no WhatsApp.</p>
@@ -732,9 +736,9 @@
     </div>
   </dialog>
 
-  <script src="assets/js/i18n.js?v=20261106c"></script>
-  <script src="assets/js/ebook-mail.js?v=20261106c"></script>
-  <script src="assets/js/main.js?v=20261106c"></script>
+  <script src="assets/js/i18n.js?v=20261122s"></script>
+  <script src="assets/js/ebook-mail.js?v=20261122s"></script>
+  <script src="assets/js/main.js?v=20261122s"></script>
 </body>
 
 </html>
