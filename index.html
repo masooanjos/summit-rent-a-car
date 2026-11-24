@@ -4,12 +4,31 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <script async src="https://www.googletagmanager.com/gtm.js?id=GTM-W9N7584C"></script>
+  <!-- Google Consent Mode v2: tudo negado por padrao ate o aceite no banner -->
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
+    (function () {
+      var accepted = false;
+      try { accepted = localStorage.getItem('summit_consent') === 'accepted'; } catch (e) {}
+      var v = accepted ? 'granted' : 'denied';
+      gtag('consent', 'default', {
+        analytics_storage: v,
+        ad_storage: v,
+        ad_user_data: v,
+        ad_personalization: v,
+        functionality_storage: 'granted',
+        security_storage: 'granted'
+      });
+    })();
   </script>
+  <!-- Google Tag Manager -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-W9N7584C');</script>
+  <!-- End Google Tag Manager -->
   <title>Summit Rent a Car | Aluguel de Carro em Orlando com Atendimento em Português</title>
   <meta name="description"
     content="Alugue seu carro em Orlando com a Summit Rent a Car: atendimento 100% em português, sem caução, seguro e Tag E-Pass inclusos. Econômicos a partir de $55/dia. Reserve agora pelo WhatsApp.">
@@ -34,7 +53,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet"
     href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500;1,9..144,600&family=Inter:wght@400;500;600;700&display=swap">
-  <link rel="stylesheet" href="assets/css/styles.css?v=20261122s">
+  <link rel="stylesheet" href="assets/css/styles.css?v=20261124b">
   <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"AutoRental","name":"Summit Rent a Car","legalName":"Ride Pro Solutions Corp","image":"https://www.summitorlando.com.br/assets/img/logo-summit.png","url":"https://www.summitorlando.com.br/","telephone":"+1-689-327-8539","email":"contato.summitorlando@gmail.com","areaServed":"Orlando, Florida, USA","priceRange":"$55-$110 por dia","openingHours":"Mo-Fr 08:00-18:00","sameAs":["https://www.instagram.com/summitorlando"]}
 </script>
@@ -619,6 +638,7 @@
             <a href="#depoimentos" data-i18n="foot_nav_dep">Depoimentos</a>
             <a href="#reservar" data-i18n="foot_nav_reservar">Reservar agora</a>
             <a href="privacidade.html" data-i18n="foot_nav_priv">Política de Privacidade</a>
+            <a href="#" data-consent-manage data-i18n="consent_manage">Preferências de cookies</a>
           </div>
         </div>
         <div class="footer__contact footer__contact-box">
@@ -680,10 +700,11 @@
     <span class="wa-float__txt" data-i18n="wa_float">Reservar</span>
   </a>
 
-  <div class="consent" id="consent" hidden>
-    <p data-i18n-html="consent_text">Usamos cookies e tecnologias de medição (Google e Meta) para melhorar sua
-      experiência e nossas campanhas. Ao aceitar, você concorda com a nossa <a href="privacidade.html" target="_blank"
-        rel="noopener">Política de Privacidade</a>.</p>
+  <div class="consent" id="consent" role="dialog" aria-live="polite" aria-label="Preferências de cookies" hidden>
+    <p data-i18n-html="consent_text">Usamos cookies de análise (Google Analytics) para entender como o site é usado e
+      melhorar nossos serviços e campanhas. Eles ficam <strong>desativados</strong> e só são ativados se você aceitar. Você
+      pode mudar sua escolha a qualquer momento em “Preferências de cookies”, no rodapé. Saiba mais na nossa <a
+        href="privacidade.html" target="_blank" rel="noopener">Política de Privacidade</a>.</p>
     <div class="consent__actions">
       <button type="button" class="btn btn--primary" id="consentAccept" data-cta="consent-accept"
         data-i18n="consent_accept">Aceitar</button>
@@ -742,9 +763,9 @@
     </div>
   </dialog>
 
-  <script src="assets/js/i18n.js?v=20261122s"></script>
-  <script src="assets/js/ebook-mail.js?v=20261122s"></script>
-  <script src="assets/js/main.js?v=20261122s"></script>
+  <script src="assets/js/i18n.js?v=20261124b"></script>
+  <script src="assets/js/ebook-mail.js?v=20261124b"></script>
+  <script src="assets/js/main.js?v=20261124b"></script>
 </body>
 
 </html>

@@ -4,12 +4,31 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <script async src="https://www.googletagmanager.com/gtm.js?id=GTM-W9N7584C"></script>
+  <!-- Google Consent Mode v2: tudo negado por padrao ate o aceite no banner -->
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
+    (function () {
+      var accepted = false;
+      try { accepted = localStorage.getItem('summit_consent') === 'accepted'; } catch (e) {}
+      var v = accepted ? 'granted' : 'denied';
+      gtag('consent', 'default', {
+        analytics_storage: v,
+        ad_storage: v,
+        ad_user_data: v,
+        ad_personalization: v,
+        functionality_storage: 'granted',
+        security_storage: 'granted'
+      });
+    })();
   </script>
+  <!-- Google Tag Manager -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-W9N7584C');</script>
+  <!-- End Google Tag Manager -->
   <title>Política de Privacidade | Summit Rent a Car</title>
   <meta name="description"
     content="Política de Privacidade da Summit Rent a Car: como coletamos, usamos e protegemos os seus dados pessoais, de acordo com a LGPD.">
@@ -20,7 +39,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet"
     href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500;1,9..144,600&family=Inter:wght@400;500;600;700&display=swap">
-  <link rel="stylesheet" href="assets/css/styles.css?v=20261122s">
+  <link rel="stylesheet" href="assets/css/styles.css?v=20261124b">
 </head>
 
 <body>
@@ -157,13 +176,27 @@
       <div class="footer__bottom" style="border-top:0;padding-top:0">
         <span>© <span id="year"></span> <span data-i18n="foot_copy">Summit Rent a Car - Ride Pro Solutions Corp. Todos
             os direitos reservados.</span></span>
-        <span><a href="index.html" style="color:var(--laranja)" data-i18n="priv_home">Início</a></span>
+        <span><a href="index.html" style="color:var(--laranja)" data-i18n="priv_home">Início</a> · <a href="#"
+            style="color:var(--laranja)" data-consent-manage data-i18n="consent_manage">Preferências de cookies</a></span>
       </div>
     </div>
   </footer>
 
-  <script src="assets/js/i18n.js?v=20261122s"></script>
-  <script src="assets/js/main.js?v=20261122s"></script>
+  <div class="consent" id="consent" role="dialog" aria-live="polite" aria-label="Preferências de cookies" hidden>
+    <p data-i18n-html="consent_text">Usamos cookies de análise (Google Analytics) para entender como o site é usado e
+      melhorar nossos serviços e campanhas. Eles ficam <strong>desativados</strong> e só são ativados se você aceitar. Você
+      pode mudar sua escolha a qualquer momento em “Preferências de cookies”, no rodapé. Saiba mais na nossa <a
+        href="privacidade.html" target="_blank" rel="noopener">Política de Privacidade</a>.</p>
+    <div class="consent__actions">
+      <button type="button" class="btn btn--primary" id="consentAccept" data-cta="consent-accept"
+        data-i18n="consent_accept">Aceitar</button>
+      <button type="button" class="btn btn--ghost" id="consentReject" data-cta="consent-reject"
+        style="color:var(--azul);border-color:var(--linha)" data-i18n="consent_reject">Recusar</button>
+    </div>
+  </div>
+
+  <script src="assets/js/i18n.js?v=20261124b"></script>
+  <script src="assets/js/main.js?v=20261124b"></script>
 </body>
 
 </html>

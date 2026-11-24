@@ -63,7 +63,8 @@
     });
   }
 
-  var GTM_ID = "GTM-XXXXXXX";
+  // O Google Tag Manager (GTM-W9N7584C) e o Consent Mode sao carregados no <head> de cada pagina.
+  // Configure o GA4 dentro do GTM. Os IDs abaixo so sao usados se preenchidos (fora do GTM).
   var GA4_ID = "G-XXXXXXXXXX";
   var META_PIXEL_ID = "XXXXXXXXXXXXXXX";
 
@@ -71,23 +72,16 @@
     return id && id.indexOf("XXX") === -1;
   }
 
-  function loadGTM(id) {
+  function gtagConsent(state) {
     window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
-    var f = document.getElementsByTagName("script")[0];
-    var j = document.createElement("script");
-    j.async = true;
-    j.src = "https://www.googletagmanager.com/gtm.js?id=" + id;
-    f.parentNode.insertBefore(j, f);
-    var n = document.createElement("noscript");
-    var ifr = document.createElement("iframe");
-    ifr.src = "https://www.googletagmanager.com/ns.html?id=" + id;
-    ifr.height = "0";
-    ifr.width = "0";
-    ifr.style.display = "none";
-    ifr.style.visibility = "hidden";
-    n.appendChild(ifr);
-    document.body.insertBefore(n, document.body.firstChild);
+    var g = window.gtag || function () { window.dataLayer.push(arguments); };
+    g("consent", "update", {
+      analytics_storage: state,
+      ad_storage: state,
+      ad_user_data: state,
+      ad_personalization: state
+    });
+    window.dataLayer.push({ event: state === "granted" ? "consent_granted" : "consent_denied" });
   }
 
   function loadGA4(id) {
@@ -115,26 +109,34 @@
   }
 
   var CONSENT_KEY = "summit_consent";
+  var CONSENT_AT_KEY = "summit_consent_at";
+  var REJECT_RETRY_MS = 7 * 24 * 60 * 60 * 1000; // reexibe o banner 7 dias apos a recusa
   var analyticsStarted = false;
 
   function getConsent() {
     try { return localStorage.getItem(CONSENT_KEY); } catch (e) { return null; }
   }
   function setConsent(v) {
-    try { localStorage.setItem(CONSENT_KEY, v); } catch (e) { }
+    try {
+      localStorage.setItem(CONSENT_KEY, v);
+      localStorage.setItem(CONSENT_AT_KEY, String(Date.now()));
+    } catch (e) { }
+  }
+  function rejectionExpired() {
+    var at = 0;
+    try { at = parseInt(localStorage.getItem(CONSENT_AT_KEY), 10) || 0; } catch (e) { }
+    return !at || Date.now() - at >= REJECT_RETRY_MS;
   }
   function initAnalytics() {
     if (analyticsStarted) return;
     analyticsStarted = true;
-    if (isSet(GTM_ID)) loadGTM(GTM_ID);
     if (isSet(GA4_ID)) loadGA4(GA4_ID);
     if (isSet(META_PIXEL_ID)) loadMetaPixel(META_PIXEL_ID);
   }
 
   var consentBox = document.getElementById("consent");
-  if (getConsent() === "accepted") {
-    initAnalytics();
-  } else if (getConsent() !== "rejected" && consentBox) {
+  function openConsent() {
+    if (!consentBox) return;
     consentBox.hidden = false;
     document.body.classList.add("consent-open");
   }
@@ -142,10 +144,33 @@
     if (consentBox) consentBox.hidden = true;
     document.body.classList.remove("consent-open");
   }
+  // O estado padrao (negado, ou concedido se ja aceito antes) e definido no <head>.
+  if (getConsent() === "accepted") {
+    initAnalytics();
+  } else if (getConsent() !== "rejected" || rejectionExpired()) {
+    // Sem escolha ainda, ou recusou ha 7 dias ou mais: pergunta de novo (continua negado ate aceitar).
+    openConsent();
+  }
   var acceptBtn = document.getElementById("consentAccept");
   var rejectBtn = document.getElementById("consentReject");
-  if (acceptBtn) acceptBtn.addEventListener("click", function () { setConsent("accepted"); initAnalytics(); closeConsent(); });
-  if (rejectBtn) rejectBtn.addEventListener("click", function () { setConsent("rejected"); closeConsent(); });
+  if (acceptBtn) acceptBtn.addEventListener("click", function () {
+    var wasAccepted = getConsent() === "accepted";
+    setConsent("accepted");
+    if (!wasAccepted) gtagConsent("granted");
+    initAnalytics();
+    closeConsent();
+  });
+  if (rejectBtn) rejectBtn.addEventListener("click", function () {
+    var wasAccepted = getConsent() === "accepted";
+    setConsent("rejected");
+    gtagConsent("denied");
+    closeConsent();
+    // Se o usuario revogou um aceite anterior, recarrega para descarregar os scripts ja ativos.
+    if (wasAccepted) window.location.reload();
+  });
+  document.querySelectorAll("[data-consent-manage]").forEach(function (el) {
+    el.addEventListener("click", function (e) { e.preventDefault(); openConsent(); });
+  });
 
   function trackLead(label) {
     if (window.dataLayer) window.dataLayer.push({ event: "lead_whatsapp", cta: label });
