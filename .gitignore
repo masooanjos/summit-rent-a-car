@@ -16,3 +16,6 @@ assets/img/Família Feliz Diante do Castelo Encantado.png
 assets/ideias/
 
 api/.data/
+
+# Credenciais de e-mail (copie de api/mail-config.example.php)
+api/mail-config.php

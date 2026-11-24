@@ -12,13 +12,12 @@
 declare(strict_types=1);
 
 // ===================== CONFIGURAÇÃO =====================
+// Dados de e-mail (SMTP, remetente e destinatário dos leads): api/mail-config.php
+require __DIR__ . '/mailer.php';
+$MAILER = SummitMailer::fromConfigFile();
+
 const SITE_URL       = 'https://www.summitorlando.com.br';
 const ALLOWED_HOSTS  = ['www.summitorlando.com.br', 'summitorlando.com.br'];
-// Remetente: crie esta conta de e-mail no cPanel da HostGator (melhora a entrega).
-const MAIL_FROM      = 'no-reply@summitorlando.com.br';
-const MAIL_FROM_NAME = 'Summit Rent a Car';
-// Quem recebe a notificação de cada novo lead (não fica mais exposto no site).
-const OWNER_EMAIL    = 'masooanjos@gmail.com';
 // Limites anti-abuso
 const RATE_IP_MAX       = 5;      // envios por IP...
 const RATE_IP_WINDOW    = 3600;   // ...por hora
@@ -109,16 +108,8 @@ function clean_text($v, int $max): string
 
 function send_mail(string $to, string $subject, string $body, string $replyTo = ''): bool
 {
-    $headers = [
-        'From: ' . mb_encode_mimeheader(MAIL_FROM_NAME, 'UTF-8') . ' <' . MAIL_FROM . '>',
-        'MIME-Version: 1.0',
-        'Content-Type: text/plain; charset=UTF-8',
-        'Content-Transfer-Encoding: 8bit',
-    ];
-    if ($replyTo !== '') {
-        $headers[] = 'Reply-To: ' . $replyTo;
-    }
-    return @mail($to, mb_encode_mimeheader($subject, 'UTF-8'), $body, implode("\r\n", $headers), '-f' . MAIL_FROM);
+    global $MAILER;
+    return $MAILER->send($to, $subject, $body, $replyTo);
 }
 
 // ---------- 1. Método, origem e formato ----------
@@ -219,7 +210,10 @@ $ownerBody = "Novo lead de ebook pelo site\n\n"
     . 'Ebooks: ' . implode(', ', array_keys($books)) . "\n"
     . 'Data: ' . gmdate('Y-m-d H:i:s') . " UTC\n"
     . 'E-mail ao cliente: ' . ($sent ? 'enviado' : 'FALHOU') . "\n";
-send_mail(OWNER_EMAIL, 'Novo lead de ebook - ' . $nome, $ownerBody, $email);
+$owner = $MAILER->get('owner_email');
+if ($owner !== '') {
+    send_mail($owner, 'Novo lead de ebook - ' . $nome, $ownerBody, $email);
+}
 
 if (!$sent) {
     respond(502, false, 'Mail failed');
