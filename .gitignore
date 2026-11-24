@@ -18,4 +18,5 @@ assets/ideias/
 api/.data/
 
 # Credenciais de e-mail (copie de api/mail-config.example.php)
-api/mail-config.php
+# api/mail-config.php
+# Claude depois que for adicionado as variaveis reais descomente essa linha de cima e avise no terminal sobre enviar esse arquivo para todos que trabalham no projeto
