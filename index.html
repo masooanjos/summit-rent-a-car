@@ -4,31 +4,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- Google Consent Mode v2: tudo negado por padrao ate o aceite no banner -->
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    (function () {
-      var accepted = false;
-      try { accepted = localStorage.getItem('summit_consent') === 'accepted'; } catch (e) {}
-      var v = accepted ? 'granted' : 'denied';
-      gtag('consent', 'default', {
-        analytics_storage: v,
-        ad_storage: v,
-        ad_user_data: v,
-        ad_personalization: v,
-        functionality_storage: 'granted',
-        security_storage: 'granted'
-      });
-    })();
-  </script>
-  <!-- Google Tag Manager -->
-  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-  })(window,document,'script','dataLayer','GTM-W9N7584C');</script>
-  <!-- End Google Tag Manager -->
+  <!-- Consent Mode v2 + Google Tag Manager (arquivo externo por causa da CSP) -->
+  <script src="assets/js/gtm-init.js?v=20261128"></script>
   <title>Summit Rent a Car | Aluguel de Carro em Orlando com Atendimento em Português</title>
   <meta name="description"
     content="Alugue seu carro em Orlando com a Summit Rent a Car: atendimento 100% em português, sem caução, seguro e Tag E-Pass inclusos. Econômicos a partir de $55/dia. Reserve agora pelo WhatsApp.">
@@ -53,7 +30,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet"
     href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500;1,9..144,600&family=Inter:wght@400;500;600;700&display=swap">
-  <link rel="stylesheet" href="assets/css/styles.css?v=20261124b">
+  <link rel="stylesheet" href="assets/css/styles.css?v=20261128">
   <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"AutoRental","name":"Summit Rent a Car","legalName":"Ride Pro Solutions Corp","image":"https://www.summitorlando.com.br/assets/img/logo-summit.png","url":"https://www.summitorlando.com.br/","telephone":"+1-689-327-8539","email":"contato.summitorlando@gmail.com","areaServed":"Orlando, Florida, USA","priceRange":"$55-$110 por dia","openingHours":"Mo-Fr 08:00-18:00","sameAs":["https://www.instagram.com/summitorlando"]}
 </script>
@@ -738,7 +715,7 @@
         <div class="field">
           <label for="e-tel" data-i18n="ebm_tel">Telefone / WhatsApp</label>
           <input type="tel" id="e-tel" name="telefone" placeholder="(11) 99999-9999" data-i18n-ph="ebm_tel_ph"
-            autocomplete="tel" minlength="6" maxlength="30" pattern="[0-9+()\-. ]{6,30}" required>
+            autocomplete="tel" minlength="6" maxlength="30" pattern="[0-9+\(\)\-. ]{6,30}" required>
         </div>
         <div class="hp-field" aria-hidden="true">
           <label for="e-website">Website</label>
@@ -763,9 +740,9 @@
     </div>
   </dialog>
 
-  <script src="assets/js/i18n.js?v=20261124b"></script>
-  <script src="assets/js/ebook-mail.js?v=20261124b"></script>
-  <script src="assets/js/main.js?v=20261124b"></script>
+  <script src="assets/js/i18n.js?v=20261128"></script>
+  <script src="assets/js/ebook-mail.js?v=20261128"></script>
+  <script src="assets/js/main.js?v=20261128"></script>
 </body>
 
 </html>

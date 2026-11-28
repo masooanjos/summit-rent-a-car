@@ -47,6 +47,12 @@ final class SummitMailer
         return $this->lastError;
     }
 
+    /** @return array<string,mixed> */
+    public function rawConfig(): array
+    {
+        return $this->cfg;
+    }
+
     /** SMTP selecionado e com credenciais preenchidas. */
     public function smtpReady(): bool
     {

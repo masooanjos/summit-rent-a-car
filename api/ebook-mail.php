@@ -216,7 +216,10 @@ if ($owner !== '') {
 }
 
 if (!$sent) {
-    respond(502, false, 'Mail failed');
+    // DEBUG: com 'debug' => true no mail-config.php, mostra o erro real na resposta.
+    // ATENÇÃO: desligue depois de resolver (expõe detalhes do servidor).
+    $debug = !empty($MAILER->rawConfig()['debug']);
+    respond(502, false, $debug ? 'Mail failed: ' . $MAILER->lastError() : 'Mail failed');
 }
 respond(200, true);
 
