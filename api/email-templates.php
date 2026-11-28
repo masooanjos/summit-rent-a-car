@@ -40,8 +40,8 @@ function e_layout(string $lang, string $preheader, string $eyebrow, string $titl
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="x-apple-disable-message-reformatting">
-<meta name="color-scheme" content="light">
-<meta name="supported-color-schemes" content="light">
+<meta name="color-scheme" content="light dark">
+<meta name="supported-color-schemes" content="light dark">
 <title>' . e_h($title) . '</title>
 <!--[if mso]><noscript><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml></noscript><![endif]-->
 <style>
@@ -50,6 +50,34 @@ function e_layout(string $lang, string $preheader, string $eyebrow, string $titl
   table,td{mso-table-lspace:0pt;mso-table-rspace:0pt}
   img{-ms-interpolation-mode:bicubic;border:0;outline:none;text-decoration:none}
   a[x-apple-data-detectors]{color:inherit!important;text-decoration:none!important}
+  :root{color-scheme:light dark;supported-color-schemes:light dark}
+  @media (prefers-color-scheme:dark){
+    .bg{background:#05081c!important}
+    .card{background:#0f1640!important;box-shadow:none!important}
+    .txt{color:#e9e8f3!important}
+    .ttl{color:#f1dca6!important}
+    .muted{color:#a9acc7!important}
+    .ebook{background:#18205a!important;border-color:#2a3470!important}
+    .soft{background:#18205a!important}
+    .line{border-color:#2a3470!important}
+    .lnk{color:#f1dca6!important}
+    .tag{color:#d9a940!important}
+    .ok{color:#3ddc84!important}
+    .fail{color:#ff6b6b!important}
+  }
+  /* Outlook.com / app do Outlook no modo escuro */
+  [data-ogsc] .bg{background:#05081c!important}
+  [data-ogsc] .card{background:#0f1640!important;box-shadow:none!important}
+  [data-ogsc] .txt{color:#e9e8f3!important}
+  [data-ogsc] .ttl{color:#f1dca6!important}
+  [data-ogsc] .muted{color:#a9acc7!important}
+  [data-ogsc] .ebook{background:#18205a!important;border-color:#2a3470!important}
+  [data-ogsc] .soft{background:#18205a!important}
+  [data-ogsc] .line{border-color:#2a3470!important}
+  [data-ogsc] .lnk{color:#f1dca6!important}
+  [data-ogsc] .tag{color:#d9a940!important}
+  [data-ogsc] .ok{color:#3ddc84!important}
+  [data-ogsc] .fail{color:#ff6b6b!important}
   @media only screen and (max-width:620px){
     .container{width:100%!important}
     .px{padding-left:22px!important;padding-right:22px!important}
@@ -58,12 +86,12 @@ function e_layout(string $lang, string $preheader, string $eyebrow, string $titl
   }
 </style>
 </head>
-<body style="margin:0;padding:0;background:#f1f0f8;">
+<body class="bg" style="margin:0;padding:0;background:#f1f0f8;">
 <div style="display:none;max-height:0;overflow:hidden;opacity:0;mso-hide:all;">' . e_h($preheader) . '&#8199;&#65279;&#847;&#8199;&#65279;&#847;&#8199;&#65279;&#847;&#8199;&#65279;&#847;</div>
-<table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0" bgcolor="#f1f0f8" style="background:#f1f0f8;">
+<table role="presentation" class="bg" width="100%" border="0" cellpadding="0" cellspacing="0" bgcolor="#f1f0f8" style="background:#f1f0f8;">
 <tr><td align="center" style="padding:28px 12px;">
   <!--[if mso]><table role="presentation" width="600" border="0" cellpadding="0" cellspacing="0"><tr><td><![endif]-->
-  <table role="presentation" class="container" width="600" border="0" cellpadding="0" cellspacing="0" style="width:600px;max-width:600px;background:#ffffff;border-radius:18px;overflow:hidden;box-shadow:0 10px 30px rgba(15,23,71,.08);">
+  <table role="presentation" class="container card" width="600" border="0" cellpadding="0" cellspacing="0" style="width:600px;max-width:600px;background:#ffffff;border-radius:18px;overflow:hidden;box-shadow:0 10px 30px rgba(15,23,71,.08);">
 
     <!-- Cabeçalho -->
     <tr><td bgcolor="#15164f" class="px" align="center" style="padding:36px 40px 34px;background:#15164f;background-image:linear-gradient(180deg,#070b26 0%,#0f1747 52%,#1c2675 100%);">
@@ -75,7 +103,7 @@ function e_layout(string $lang, string $preheader, string $eyebrow, string $titl
     <tr><td height="4" bgcolor="#d9a940" style="height:4px;line-height:4px;font-size:0;background:#d9a940;background-image:linear-gradient(90deg,#f3dc9a,#d9a940 55%,#c0912c);">&nbsp;</td></tr>
 
     <!-- Conteúdo -->
-    <tr><td class="px" style="padding:36px 40px 12px;font-family:' . $fontText . ';font-size:16px;line-height:26px;color:#121733;">
+    <tr><td class="px txt" style="padding:36px 40px 12px;font-family:' . $fontText . ';font-size:16px;line-height:26px;color:#121733;">
       ' . $content . '
     </td></tr>
 
@@ -115,7 +143,7 @@ function email_ebook_client(string $lang, string $nome, array $books): string
     foreach ($books as $b) {
         $url = EMAIL_SITE . '/assets/ebooks/' . rawurlencode($b['file']);
         $cards .= '
-      <table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0" style="margin:0 0 14px;border:1px solid #e7e4ef;border-radius:14px;background:#fbf9f4;">
+      <table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0" class="ebook" style="margin:0 0 14px;border:1px solid #e7e4ef;border-radius:14px;background:#fbf9f4;">
         <tr>
           <td width="64" valign="middle" align="center" style="padding:18px 0 18px 18px;">
             <table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr>
@@ -123,8 +151,8 @@ function email_ebook_client(string $lang, string $nome, array $books): string
             </tr></table>
           </td>
           <td valign="middle" style="padding:18px 16px;font-family:' . $font . ';">
-            <p style="margin:0 0 2px;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#94701f;">' . ($en ? 'Ebook &middot; PDF' : 'Ebook &middot; PDF') . '</p>
-            <p style="margin:0;font-family:' . $fontDisplay . ';font-size:18px;line-height:24px;font-weight:600;color:#15164f;">' . e_h($b['title']) . '</p>
+            <p style="margin:0 0 2px;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#94701f;" class="tag">' . ($en ? 'Ebook &middot; PDF' : 'Ebook &middot; PDF') . '</p>
+            <p class="ttl" style="margin:0;font-family:' . $fontDisplay . ';font-size:18px;line-height:24px;font-weight:600;color:#15164f;">' . e_h($b['title']) . '</p>
           </td>
           <td valign="middle" align="right" class="stack" style="padding:18px 18px 18px 0;">
             ' . e_button($url, $en ? 'Download &darr;' : 'Baixar &darr;', '#d9a940', '#1d1503', '#c0912c') . '
@@ -140,7 +168,7 @@ function email_ebook_client(string $lang, string $nome, array $books): string
     foreach ($perks as $p) {
         $perkCells .= '<td class="stack" width="33%" align="center" valign="top" style="padding:0 6px;">
           <p style="margin:0 0 6px;font-size:24px;line-height:28px;">' . $p[0] . '</p>
-          <p style="margin:0;font-family:' . $font . ';font-size:13px;line-height:18px;font-weight:600;color:#15164f;">' . $p[1] . '</p>
+          <p class="ttl" style="margin:0;font-family:' . $font . ';font-size:13px;line-height:18px;font-weight:600;color:#15164f;">' . $p[1] . '</p>
         </td>';
     }
 
@@ -152,7 +180,7 @@ function email_ebook_client(string $lang, string $nome, array $books): string
 
       <!-- Destaques -->
       <table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0" style="margin:26px 0 8px;">
-        <tr><td style="padding:22px 12px;border-radius:14px;background:#f1f0f8;">
+        <tr><td class="soft" style="padding:22px 12px;border-radius:14px;background:#f1f0f8;">
           <table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0"><tr>' . $perkCells . '</tr></table>
         </td></tr>
       </table>
@@ -160,8 +188,8 @@ function email_ebook_client(string $lang, string $nome, array $books): string
       <!-- CTA WhatsApp -->
       <table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0" style="margin:22px 0 26px;">
         <tr><td align="center">
-          <p style="margin:0 0 6px;font-family:' . $fontDisplay . ';font-size:22px;line-height:28px;font-weight:600;color:#15164f;">' . ($en ? 'Need a car in Orlando?' : 'Vai precisar de carro em Orlando?') . '</p>
-          <p style="margin:0 0 18px;font-size:15px;line-height:22px;color:#5b5e74;">' . ($en ? 'Talk to us and get a quote in minutes.' : 'Fale com a gente e receba sua cotação em minutos.') . '</p>
+          <p class="ttl" style="margin:0 0 6px;font-family:' . $fontDisplay . ';font-size:22px;line-height:28px;font-weight:600;color:#15164f;">' . ($en ? 'Need a car in Orlando?' : 'Vai precisar de carro em Orlando?') . '</p>
+          <p class="muted" style="margin:0 0 18px;font-size:15px;line-height:22px;color:#5b5e74;">' . ($en ? 'Talk to us and get a quote in minutes.' : 'Fale com a gente e receba sua cotação em minutos.') . '</p>
           ' . e_button(EMAIL_WA, ($en ? 'Talk on WhatsApp' : 'Falar no WhatsApp'), '#25d366', '#073e22', '#25d366') . '
         </td></tr>
       </table>';
@@ -183,27 +211,27 @@ function email_ebook_owner(string $nome, string $email, string $telefone, string
     $font = "Inter,'Segoe UI',Roboto,Helvetica,Arial,sans-serif";
     $rows = [
         'Nome'     => e_h($nome),
-        'E-mail'   => '<a href="mailto:' . e_h($email) . '" style="color:#1f218c;font-weight:600;">' . e_h($email) . '</a>',
+        'E-mail'   => '<a href="mailto:' . e_h($email) . '" class="lnk" style="color:#1f218c;font-weight:600;">' . e_h($email) . '</a>',
         'Telefone' => e_h($telefone),
         'Idioma'   => $idioma === 'en' ? 'Inglês' : 'Português',
         'Ebooks'   => e_h(implode(', ', $bookKeys)),
         'Data'     => gmdate('d/m/Y H:i') . ' UTC',
         'E-mail ao cliente' => $sent
-            ? '<span style="color:#1a8a4a;font-weight:700;">&#10003; enviado</span>'
-            : '<span style="color:#c0392b;font-weight:700;">&#10007; FALHOU</span>',
+            ? '<span class="ok" style="color:#1a8a4a;font-weight:700;">&#10003; enviado</span>'
+            : '<span class="fail" style="color:#c0392b;font-weight:700;">&#10007; FALHOU</span>',
     ];
     $tr = '';
     foreach ($rows as $k => $v) {
         $tr .= '<tr>
-          <td width="38%" style="padding:12px 14px;border-bottom:1px solid #e7e4ef;font-family:' . $font . ';font-size:13px;font-weight:700;color:#5b5e74;text-transform:uppercase;letter-spacing:.5px;">' . $k . '</td>
-          <td style="padding:12px 14px;border-bottom:1px solid #e7e4ef;font-family:' . $font . ';font-size:15px;color:#121733;">' . $v . '</td>
+          <td width="38%" class="line muted" style="padding:12px 14px;border-bottom:1px solid #e7e4ef;font-family:' . $font . ';font-size:13px;font-weight:700;color:#5b5e74;text-transform:uppercase;letter-spacing:.5px;">' . $k . '</td>
+          <td class="line txt" style="padding:12px 14px;border-bottom:1px solid #e7e4ef;font-family:' . $font . ';font-size:15px;color:#121733;">' . $v . '</td>
         </tr>';
     }
     $digits = preg_replace('/\D+/', '', $telefone);
 
     $content = '
       <p style="margin:0 0 18px;">Um novo visitante baixou ebooks pelo site. Dados do lead:</p>
-      <table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0" style="border:1px solid #e7e4ef;border-radius:12px;border-collapse:separate;overflow:hidden;margin:0 0 24px;">' . $tr . '</table>
+      <table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0" class="ebook" style="border:1px solid #e7e4ef;border-radius:12px;border-collapse:separate;overflow:hidden;margin:0 0 24px;">' . $tr . '</table>
       <table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0" style="margin:0 0 26px;"><tr><td align="center">
         ' . e_button('https://wa.me/' . $digits, 'Chamar no WhatsApp', '#25d366', '#073e22', '#25d366') . '
       </td></tr></table>';
