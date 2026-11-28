@@ -69,7 +69,7 @@ final class SummitMailer
         return true;
     }
 
-    public function send(string $to, string $subject, string $body, string $replyTo = ''): bool
+    public function send(string $to, string $subject, string $body, string $replyTo = '', string $html = ''): bool
     {
         $this->lastError = '';
         $from = $this->get('from_email');
@@ -80,7 +80,7 @@ final class SummitMailer
 
         if ($this->smtpReady()) {
             try {
-                $ok = $this->sendSmtp($to, $subject, $body, $replyTo);
+                $ok = $this->sendSmtp($to, $subject, $body, $replyTo, $html);
             } catch (\Throwable $e) {
                 $this->lastError = 'exceção: ' . $e->getMessage();
                 $ok = false;
@@ -95,7 +95,7 @@ final class SummitMailer
         if (($this->cfg['transport'] ?? 'smtp') === 'smtp') {
             error_log('[summit-mail] SMTP não configurado em api/mail-config.php - usando mail() do PHP');
         }
-        return $this->sendNative($to, $subject, $body, $replyTo);
+        return $this->sendNative($to, $subject, $body, $replyTo, $html);
     }
 
     // ------------------------------------------------------------------
@@ -122,21 +122,38 @@ final class SummitMailer
         return rtrim(chunk_split(base64_encode(str_replace("\n", "\r\n", $body)), 76, "\r\n"));
     }
 
-    private function sendNative(string $to, string $subject, string $body, string $replyTo): bool
+    /**
+     * Monta o corpo MIME: só texto, ou multipart/alternative (texto + HTML).
+     * @return array{0:string[],1:string}
+     */
+    private function mime(string $text, string $html): array
+    {
+        $part = "Content-Type: %s; charset=UTF-8\r\nContent-Transfer-Encoding: base64";
+        if ($html === '') {
+            return [explode("\r\n", sprintf($part, 'text/plain')), $this->encodedBody($text)];
+        }
+        $b = 'summit_' . bin2hex(random_bytes(12));
+        $body = "--{$b}\r\n" . sprintf($part, 'text/plain') . "\r\n\r\n" . $this->encodedBody($text) . "\r\n"
+            . "--{$b}\r\n" . sprintf($part, 'text/html') . "\r\n\r\n" . $this->encodedBody($html) . "\r\n"
+            . "--{$b}--";
+        return [['Content-Type: multipart/alternative; boundary="' . $b . '"'], $body];
+    }
+
+    private function sendNative(string $to, string $subject, string $body, string $replyTo, string $html = ''): bool
     {
         $headers = [
             'From: ' . $this->fromHeader(),
             'MIME-Version: 1.0',
-            'Content-Type: text/plain; charset=UTF-8',
-            'Content-Transfer-Encoding: base64',
         ];
+        [$mimeHeaders, $mimeBody] = $this->mime($body, $html);
+        $headers = array_merge($headers, $mimeHeaders);
         if ($replyTo !== '') {
             $headers[] = 'Reply-To: ' . $replyTo;
         }
         $ok = @mail(
             $to,
             mb_encode_mimeheader($subject, 'UTF-8', 'B'),
-            $this->encodedBody($body),
+            $mimeBody,
             implode("\r\n", $headers),
             '-f' . $this->get('from_email')
         );
@@ -147,7 +164,7 @@ final class SummitMailer
         return $ok;
     }
 
-    private function sendSmtp(string $to, string $subject, string $body, string $replyTo): bool
+    private function sendSmtp(string $to, string $subject, string $body, string $replyTo, string $html = ''): bool
     {
         $s = $this->cfg['smtp'];
         $host = (string) $s['host'];
@@ -225,13 +242,13 @@ final class SummitMailer
             'To: <' . $to . '>',
             'Subject: ' . mb_encode_mimeheader($subject, 'UTF-8', 'B'),
             'MIME-Version: 1.0',
-            'Content-Type: text/plain; charset=UTF-8',
-            'Content-Transfer-Encoding: base64',
         ];
+        [$mimeHeaders, $mimeBody] = $this->mime($body, $html);
+        $headers = array_merge($headers, $mimeHeaders);
         if ($replyTo !== '') {
             $headers[] = 'Reply-To: <' . $replyTo . '>';
         }
-        $data = implode("\r\n", $headers) . "\r\n\r\n" . $this->encodedBody($body);
+        $data = implode("\r\n", $headers) . "\r\n\r\n" . $mimeBody;
         $data = preg_replace('/^\./m', '..', $data); // dot-stuffing
         if (!$this->cmd($data . "\r\n.", 250, 'envio da mensagem')) {
             return false;

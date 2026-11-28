@@ -14,6 +14,7 @@ declare(strict_types=1);
 // ===================== CONFIGURAÇÃO =====================
 // Dados de e-mail (SMTP, remetente e destinatário dos leads): api/mail-config.php
 require __DIR__ . '/mailer.php';
+require __DIR__ . '/email-templates.php';
 $MAILER = SummitMailer::fromConfigFile();
 
 const SITE_URL       = 'https://www.summitorlando.com.br';
@@ -106,10 +107,10 @@ function clean_text($v, int $max): string
     return mb_strlen($v, 'UTF-8') > $max ? '' : $v;
 }
 
-function send_mail(string $to, string $subject, string $body, string $replyTo = ''): bool
+function send_mail(string $to, string $subject, string $body, string $replyTo = '', string $html = ''): bool
 {
     global $MAILER;
-    return $MAILER->send($to, $subject, $body, $replyTo);
+    return $MAILER->send($to, $subject, $body, $replyTo, $html);
 }
 
 // ---------- 1. Método, origem e formato ----------
@@ -203,7 +204,7 @@ if ($idioma === 'en') {
         . "Summit Rent a Car\n" . SITE_URL . "\n";
 }
 
-$sent = send_mail($email, $subject, $body);
+$sent = send_mail($email, $subject, $body, '', email_ebook_client($idioma, $nome, array_values($books)));
 
 $ownerBody = "Novo lead de ebook pelo site\n\n"
     . "Nome: {$nome}\nE-mail: {$email}\nTelefone: {$telefone}\nIdioma: {$idioma}\n"
@@ -212,7 +213,8 @@ $ownerBody = "Novo lead de ebook pelo site\n\n"
     . 'E-mail ao cliente: ' . ($sent ? 'enviado' : 'FALHOU') . "\n";
 $owner = $MAILER->get('owner_email');
 if ($owner !== '') {
-    send_mail($owner, 'Novo lead de ebook - ' . $nome, $ownerBody, $email);
+    send_mail($owner, 'Novo lead de ebook - ' . $nome, $ownerBody, $email,
+        email_ebook_owner($nome, $email, $telefone, $idioma, array_keys($books), $sent));
 }
 
 if (!$sent) {
