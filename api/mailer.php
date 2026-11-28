@@ -143,21 +143,23 @@ final class SummitMailer
 
     private function sendSmtp(string $to, string $subject, string $body, string $replyTo): bool
     {
-        $s       = $this->cfg['smtp'];
-        $host    = (string) $s['host'];
-        $secure  = strtolower((string) ($s['secure'] ?? 'tls'));
-        $port    = (int) ($s['port'] ?? ($secure === 'ssl' ? 465 : 587));
+        $s = $this->cfg['smtp'];
+        $host = (string) $s['host'];
+        $secure = strtolower((string) ($s['secure'] ?? 'tls'));
+        $port = (int) ($s['port'] ?? ($secure === 'ssl' ? 465 : 587));
         $timeout = (int) ($s['timeout'] ?? 15);
-        $verify  = (bool) ($s['verify_cert'] ?? true);
-        $from    = $this->get('from_email');
+        $verify = (bool) ($s['verify_cert'] ?? true);
+        $from = $this->get('from_email');
 
-        $ctx = stream_context_create(['ssl' => [
-            'verify_peer'       => $verify,
-            'verify_peer_name'  => $verify,
-            'allow_self_signed' => !$verify,
-            'peer_name'         => $host,
-            'SNI_enabled'       => true,
-        ]]);
+        $ctx = stream_context_create([
+            'ssl' => [
+                'verify_peer' => $verify,
+                'verify_peer_name' => $verify,
+                'allow_self_signed' => !$verify,
+                'peer_name' => $host,
+                'SNI_enabled' => true,
+            ]
+        ]);
         $remote = ($secure === 'ssl' ? 'ssl://' : 'tcp://') . $host . ':' . $port;
         $sock = @stream_socket_client($remote, $errno, $errstr, $timeout, STREAM_CLIENT_CONNECT, $ctx);
         if (!$sock) {
@@ -193,16 +195,20 @@ final class SummitMailer
         }
 
         // AUTH LOGIN (as credenciais nunca vão para o log)
-        if (!$this->cmd('AUTH LOGIN', 334)
+        if (
+            !$this->cmd('AUTH LOGIN', 334)
             || !$this->cmd(base64_encode((string) $s['username']), 334, 'usuário')
-            || !$this->cmd(base64_encode((string) $s['password']), 235, 'senha')) {
+            || !$this->cmd(base64_encode((string) $s['password']), 235, 'senha')
+        ) {
             $this->lastError = 'autenticação SMTP recusada - confira usuário/senha. ' . $this->lastError;
             return false;
         }
 
-        if (!$this->cmd('MAIL FROM:<' . $from . '>', 250)
+        if (
+            !$this->cmd('MAIL FROM:<' . $from . '>', 250)
             || !$this->cmd('RCPT TO:<' . $to . '>', [250, 251])
-            || !$this->cmd('DATA', 354)) {
+            || !$this->cmd('DATA', 354)
+        ) {
             return false;
         }
 
